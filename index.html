@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2025 by kkkkame0721 (http://jsbin.com/revuqik/3/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>fetchデモ</title>
+  <link rel="stylesheet" href="style.css">
+<style id="jsbin-css">
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Helvetica Neue', sans-serif;
+  color: white;
+}
+
+.feed {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #888;
+  font-size: 1.2rem;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform 0.6s ease, opacity 0.4s ease;
+}
+
+.slide.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.info {
+  position: absolute;
+  bottom: calc(16px + env(safe-area-inset-bottom)); /* ←ここがポイント */
+  left: calc(16px + env(safe-area-inset-left));
+  font-size: 1.1rem;
+  text-shadow: 0 0 8px rgba(0,0,0,0.6);
+}
+
+.dummyImage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 1.2rem;
+}
+</style>
+</head>
+<body>
+  <main class="feed">
+    <div class="loading">読み込み中...</div>
+  </main>
+
+  <script src="script.js"></script>
+<script id="jsbin-javascript">
+const feed = document.querySelector('.feed');
+
+// JSONをfetchで取得
+fetch('https://kkkkame0721.github.io/p5assets/fetch_demo/sampleData.json')
+  .then(res => {
+    if (!res.ok) throw new Error("ネットワークエラー");
+    return res.json();
+  })
+  .then(videos => {
+    feed.innerHTML = ''; // ローディングを消去
+
+    // スライドを動的に生成
+    videos.forEach(v => {
+      const slide = document.createElement('section');
+      slide.className = 'slide';
+      slide.style.backgroundImage = `url(${v.thumb})`;
+      slide.innerHTML = `<div class="dummyImage">${v.dummy}</div><div class="info">${v.user}<br>${v.title}</div>`;
+      feed.appendChild(slide);
+    });
+
+    // 最初のスライドを表示
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    slides[current].classList.add('active');
+
+    let startY = 0;
+    document.addEventListener('touchstart', e => {
+      startY = e.touches[0].clientY;
+    });
+
+    document.addEventListener('touchend', e => {
+      const endY = e.changedTouches[0].clientY;
+      const deltaY = startY - endY;
+      if (Math.abs(deltaY) < 50) return;
+
+      slides[current].classList.remove('active');
+      if (deltaY > 0) {
+        current = (current + 1) % slides.length;
+      } else {
+        current = (current - 1 + slides.length) % slides.length;
+      }
+      slides[current].classList.add('active');
+    });
+  })
+  .catch(err => {
+    feed.innerHTML = `<div class="loading">読み込み失敗: ${err.message}</div>`;
+    console.error(err);
+  });
+
+</script>
+</body>
+</html>
