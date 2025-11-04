@@ -286,7 +286,7 @@
   let cards = [];
 
   // --- JSONデータ取得 ---
-  fetch('https://kkkkame0721.github.io/demoApp/data.json')
+  fetch('https://kkkkame0721.github.io/demoApp/data.json?ver=' + Date.now())
     .then(res => res.json())
     .then(data => {
       data.forEach(item => {
@@ -302,7 +302,6 @@
         scrollArea.appendChild(card);
         const thumb = document.createElement('img');
         thumb.src = item.thumbnail;
-        thumb.title = item.thumbnail;
         collectionGrid.appendChild(thumb);
       });
       cards = document.querySelectorAll('.card');
