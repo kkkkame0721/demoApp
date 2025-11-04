@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>スワイプ＋詳細モーダル</title>
 <style>
+
   html, body {
     margin: 0;
     padding: 0;
     overflow: hidden;
     height: 100vh;
-    font-family: sans-serif;
+    font-family: "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro","Rounded Mplus 1c", "Yu Gothic Rounded", "Noto Sans JP",sans-serif;
   }
 
   .container {
@@ -24,6 +25,50 @@
   .container.active {
     display: block;
   }
+  
+  /* --- ✅ 上部タイトルバー --- */
+  .title-bar {
+    position: relative;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    z-index: 30;
+  }
+
+  /* ハンバーガーメニューアイコン */
+  .menu-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+      width: 24px;
+    height: 24px;
+    margin-right: 1rem;
+    cursor: pointer;
+  }
+
+  /* タイトル文字 */
+  .page-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+
+  /* ページ内容はタイトルバーの下から始まるように */
+  .page-content {
+    padding-bottom: 60px; /* 下のタブバー分 */
+    box-sizing: border-box;
+  }
+
 
   .card {
     position: relative;
@@ -118,7 +163,12 @@
     font-size: 1.2rem;
     z-index: 20;
     cursor: pointer;
+    display: none;
   }
+  
+  .back-btn.active {
+    display: block;
+  } 
   
   /* --- ✅ ボトムタブバー --- */
   .tab-bar {
@@ -164,20 +214,38 @@
 </style>
 </head>
 <body>
-
-  <div class="container" id="home">ホーム画面</div>
-  <div class="container" id="ticket">チケット画面</div>
-  <div class="container" id="collection">コレクション画面
-    <div class="collection-grid" id="collectionGrid">
-      <img src="https://kkkkame0721.github.io/demoApp/img/thumb1.png" alt="thumb1">
-      <img src="https://kkkkame0721.github.io/demoApp/img/thumb2.png" alt="thumb2">
-      <img src="https://kkkkame0721.github.io/demoApp/img/thumb3.png" alt="thumb3">
-      <img src="https://kkkkame0721.github.io/demoApp/img/thumb4.png" alt="thumb4">
-      <img src="https://kkkkame0721.github.io/demoApp/img/thumb5.png" alt="thumb5">
-      <img src="https://kkkkame0721.github.io/demoApp/img/thumb6.png" alt="thumb6">
+  <div class="container active" id="home">
+    <div class="title-bar">
+      <img src="menu.svg" alt="menu" class="menu-icon" />
+      <h1 class="page-title">ホーム</h1>
+    </div>
+    <div class="page-content">
+      <img src="https://kkkkame0721.github.io/demoApp/img/home_content.jpg" id="homeContent" />
     </div>
   </div>
-  <div class="container active" id="scrollArea">
+  
+  <div class="container" id="ticket">
+    <div class="title-bar">
+      <img src="menu.svg" alt="menu" class="menu-icon" />
+      <h1 class="page-title">チケット管理</h1>
+    </div>
+    <div class="page-content">
+      <img src="https://kkkkame0721.github.io/demoApp/img/ticket_content.jpg" id="ticketContent" />
+    </div>
+  </div>
+  
+  <div class="container" id="collection">
+    <div class="title-bar">
+      <img src="menu.svg" alt="menu" class="menu-icon" />
+      <h1 class="page-title">コレクション</h1>
+    </div>
+    <div class="page-content">
+      <div class="collection-grid" id="collectionGrid">
+      </div>
+    </div>
+  </div>
+  
+  <div class="container" id="scrollArea">
     <button class="back-btn" id="backBtn">←</button>
   </div>
 
@@ -192,7 +260,7 @@
 
   <!-- ✅ ボトムバー -->
   <div class="tab-bar" id="tabBar">
-    <div class="tab" data-tab="home">
+    <div class="tab active" data-tab="home">
       <img src="https://kkkkame0721.github.io/demoApp/icon/home.svg" alt="ホーム">
       <span>ホーム</span>
     </div>
@@ -200,7 +268,7 @@
       <img src="https://kkkkame0721.github.io/demoApp/icon/ticket.svg" alt="チケット">
       <span>チケット</span>
     </div>
-    <div class="tab active" data-tab="collection">
+    <div class="tab" data-tab="collection">
       <img src="https://kkkkame0721.github.io/demoApp/icon/collection_active.svg" alt="コレクション">
       <span>コレクション</span>
     </div>
@@ -221,7 +289,7 @@
   fetch('https://kkkkame0721.github.io/demoApp/data.json')
     .then(res => res.json())
     .then(data => {
-      data.forEach((item, i) => {
+      data.forEach(item => {
         const card = document.createElement('div');
         card.classList.add('card');
         card.innerHTML = `
@@ -232,6 +300,10 @@
           </div>
         `;
         scrollArea.appendChild(card);
+        const thumb = document.createElement('img');
+        thumb.src = item.thumbnail;
+        thumb.title = item.thumbnail;
+        collectionGrid.appendChild(thumb);
       });
       cards = document.querySelectorAll('.card');
     });
@@ -286,33 +358,37 @@
     const data = index >= 0 ? cards[index].textContent.trim() : '詳細情報';
     modalContent.innerHTML = `<h2>${data}</h2><p>ここに動画の詳細情報が入ります。</p>`;
     modal.classList.add('open');
+    backBtn.classList.remove("active");
   }
 
   function closeModalFn() {
     modal.classList.remove('open');
+    backBtn.classList.add("active");
   }
 
   // ▼ タブ切り替え処理
   function showPage(tabName) {
+    //ページ切り替え
     containers.forEach(p => p.classList.remove('active'));
     document.getElementById(tabName).classList.add('active');
+    //タブバー切り替え
+    tabs.forEach(t => {
+      const n = t.dataset.tab;
+      const img = t.querySelector('img');
+      if (n === tabName) {
+        t.classList.add('active');
+        img.src = `https://kkkkame0721.github.io/demoApp/icon/${n}_active.svg`;
+      } else {
+        t.classList.remove('active');
+        img.src = `https://kkkkame0721.github.io/demoApp/icon/${n}.svg`;
+      }
+    });
   }
   
   // --- ✅ タブ切り替え ---
   tabs.forEach(tab => {
     const name = tab.dataset.tab;
     tab.addEventListener('click', () => {
-      tabs.forEach(t => {
-        const n = t.dataset.tab;
-        const img = t.querySelector('img');
-        if (t === tab) {
-          t.classList.add('active');
-          img.src = `https://kkkkame0721.github.io/demoApp/icon/${n}_active.svg`;
-        } else {
-          t.classList.remove('active');
-          img.src = `https://kkkkame0721.github.io/demoApp/icon/${n}.svg`;
-        }
-      });
       showPage(name);
     });
   });
@@ -321,11 +397,17 @@
   collectionGrid.addEventListener('click', e => {
     if (e.target.tagName === 'IMG') {
       showPage('scrollArea');
+      backBtn.classList.add("active");
     }
   });
   // ▼ 動画ページ ← 戻る
   backBtn.addEventListener('click', () => {
     showPage('collection');
+    backBtn.classList.remove("active");
+  });
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    showPage("collection");
   });
 </script>
 </body>
