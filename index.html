@@ -28,7 +28,7 @@
   
   /* --- ✅ 上部タイトルバー --- */
   .title-bar {
-    position: relative;
+    position: fixed;
     justify-content: center;
     top: 0;
     left: 0;
@@ -65,10 +65,20 @@
 
   /* ページ内容はタイトルバーの下から始まるように */
   .page-content {
+    padding-top: 90px;
     padding-bottom: 60px; /* 下のタブバー分 */
     box-sizing: border-box;
   }
-
+  
+  .page-content img{
+    width: 100%;
+  }
+  .page-content #homeBottom {
+    position: fixed;
+    bottom: 70px;
+    left: 0px;
+    z-index: 40;
+  }
 
   .card {
     position: relative;
@@ -216,27 +226,28 @@
 <body>
   <div class="container active" id="home">
     <div class="title-bar">
-      <img src="menu.svg" alt="menu" class="menu-icon" />
+      <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg" alt="menu" class="menu-icon" />
       <h1 class="page-title">ホーム</h1>
     </div>
     <div class="page-content">
-      <img src="https://kkkkame0721.github.io/demoApp/img/home_content.jpg" id="homeContent" />
+      <img src="https://kkkkame0721.github.io/demoApp/img/home_content.svg?ver=1.1" id="homeContent" />
+      <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom.svg" id="homeBottom" />
     </div>
   </div>
   
   <div class="container" id="ticket">
     <div class="title-bar">
-      <img src="menu.svg" alt="menu" class="menu-icon" />
+      <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg" alt="menu" class="menu-icon" />
       <h1 class="page-title">チケット管理</h1>
     </div>
     <div class="page-content">
-      <img src="https://kkkkame0721.github.io/demoApp/img/ticket_content.jpg" id="ticketContent" />
+      <img src="https://kkkkame0721.github.io/demoApp/img/ticket_content.svg" id="ticketContent" />
     </div>
   </div>
   
   <div class="container" id="collection">
     <div class="title-bar">
-      <img src="menu.svg" alt="menu" class="menu-icon" />
+      <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg" alt="menu" class="menu-icon" />
       <h1 class="page-title">コレクション</h1>
     </div>
     <div class="page-content">
@@ -286,7 +297,7 @@
   let cards = [];
 
   // --- JSONデータ取得 ---
-  fetch('https://kkkkame0721.github.io/demoApp/data.json?ver=' + Date.now())
+  fetch('https://kkkkame0721.github.io/demoApp/data.json?ver='+Date.now())
     .then(res => res.json())
     .then(data => {
       data.forEach(item => {
@@ -406,7 +417,7 @@
   });
   
   document.addEventListener('DOMContentLoaded', () => {
-    showPage("collection");
+    showPage("home");
   });
 </script>
 </body>
