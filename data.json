@@ -2,21 +2,25 @@
   {
     "title": "動画1",
     "thumbnail": "https://placehold.jp/375x812.png?text=動画1",
-    "description": "これは動画1の詳細情報です。"
+    "description": "これは動画1の詳細情報です。",
+    "date": "2075/10/13"
   },
   {
     "title": "動画2",
     "thumbnail": "https://placehold.jp/375x812.png?text=動画2",
-    "description": "動画2の説明文がここに入ります。"
+    "description": "動画2の説明文がここに入ります。",
+    "date": "2075/10/15"
   },
   {
     "title": "動画3",
     "thumbnail": "https://placehold.jp/375x812.png?text=動画3",
-    "description": "動画3の概要です。"
+    "description": "動画3の概要です。",
+    "date": "2075/10/09"
   },
   {
     "title": "動画4",
     "thumbnail": "https://placehold.jp/375x812.png?text=動画4",
-    "description": "動画4の詳細です。"
+    "description": "動画4の詳細です。",
+    "date": "2075/10/01"
   }
 ]
