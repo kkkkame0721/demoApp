@@ -4,7 +4,339 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>スワイプ＋詳細モーダル</title>
+<style><!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スワイプ＋詳細モーダル</title>
 <style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100vh;
+    font-family: sans-serif;
+  }
+
+  .container {
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    display: none;
+  }
+  .container.active {
+    display: block;
+  }
+
+  .card {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    scroll-snap-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+  }
+
+  .card:nth-child(odd) { background: #ff4b5c; }
+  .card:nth-child(even) { background: #2b2e4a; }
+
+  .card:not(.active) {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+
+  /* モーダルの基本構造 */
+  .modal {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100%;
+    background: white;
+    color: #333;
+    transition: right 0.4s ease;
+    z-index: 10;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.3);
+    overflow-y: auto;
+  }
+
+  .modal.open {
+    right: 0;
+  }
+
+  .modal-header {
+    padding: 1rem;
+    background: #222;
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+  }
+
+  .close-btn {
+    color: #fff;
+    float: right;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  .info {
+    position: absolute;
+    bottom: calc(60px + env(safe-area-inset-bottom));
+    left: calc(16px + env(safe-area-inset-left));
+    font-size: 1.1rem;
+    text-shadow: 0 0 8px rgba(0,0,0,0.6);
+  }
+  
+  /* コレクションページ */
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    padding: 4px;
+  }
+  .collection-grid img {
+    width: 100%;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* 戻るボタン */
+  .back-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    z-index: 20;
+    cursor: pointer;
+  }
+  
+  /* --- ✅ ボトムタブバー --- */
+  .tab-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background: #fff;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    z-index: 20;
+    padding-top: 0.2rem;
+  }
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 33.3%;
+    font-size: 0.7rem;
+    color: #757575;
+    cursor: pointer;
+  }
+
+  .tab img {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 2px;
+  }
+
+  .tab.active {
+    font-weight: bold;
+  }
+
+  .tab.active span {
+    background: linear-gradient(to right, #FF54AF, #FF9A0B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>
+</head>
+<body>
+
+  <div class="container" id="home">ホーム画面</div>
+  <div class="container" id="ticket">チケット画面</div>
+  <div class="container" id="collection">コレクション画面
+    <div class="collection-grid" id="collectionGrid">
+      <img src="https://kkkkame0721.github.io/demoApp/img/thumb1.png" alt="thumb1">
+      <img src="https://kkkkame0721.github.io/demoApp/img/thumb2.png" alt="thumb2">
+      <img src="https://kkkkame0721.github.io/demoApp/img/thumb3.png" alt="thumb3">
+      <img src="https://kkkkame0721.github.io/demoApp/img/thumb4.png" alt="thumb4">
+      <img src="https://kkkkame0721.github.io/demoApp/img/thumb5.png" alt="thumb5">
+      <img src="https://kkkkame0721.github.io/demoApp/img/thumb6.png" alt="thumb6">
+    </div>
+  </div>
+  <div class="container active" id="scrollArea">
+    <button class="back-btn" id="backBtn">←</button>
+  </div>
+
+  <!-- 詳細モーダル -->
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      詳細ページ
+      <span class="close-btn" id="closeModal">✕</span>
+    </div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+
+  <!-- ✅ ボトムバー -->
+  <div class="tab-bar" id="tabBar">
+    <div class="tab" data-tab="home">
+      <img src="https://kkkkame0721.github.io/demoApp/icon/home.svg" alt="ホーム">
+      <span>ホーム</span>
+    </div>
+    <div class="tab" data-tab="ticket">
+      <img src="https://kkkkame0721.github.io/demoApp/icon/ticket.svg" alt="チケット">
+      <span>チケット</span>
+    </div>
+    <div class="tab active" data-tab="collection">
+      <img src="https://kkkkame0721.github.io/demoApp/icon/collection_active.svg" alt="コレクション">
+      <span>コレクション</span>
+    </div>
+  </div>
+
+<script>
+  const containers = document.querySelectorAll('.container');
+  const scrollArea = document.getElementById('scrollArea');
+  const modal = document.getElementById('modal');
+  const modalContent = document.getElementById('modalContent');
+  const closeBtn = document.getElementById('closeModal');
+  const tabs = document.querySelectorAll('.tab');
+  const collectionGrid = document.getElementById('collectionGrid');
+  const backBtn = document.getElementById('backBtn');
+  let cards = [];
+
+  // --- JSONデータ取得 ---
+  fetch('https://kkkkame0721.github.io/demoApp/data.json')
+    .then(res => res.json())
+    .then(data => {
+      data.forEach((item, i) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.innerHTML = `
+          <div class="info">
+            ${item.title}
+            <br>
+            ${item.date}
+          </div>
+        `;
+        scrollArea.appendChild(card);
+      });
+      cards = document.querySelectorAll('.card');
+    });
+
+  // --- 縦スクロールのアニメーション制御 ---
+  scrollArea.addEventListener('scroll', () => {
+    const scrollPos = scrollArea.scrollTop;
+    const height = window.innerHeight;
+    cards.forEach((card, index) => {
+      const offset = Math.abs(scrollPos - index * height);
+      const progress = Math.min(offset / height, 1);
+      card.style.transform = `scale(${1 - progress * 0.05})`;
+      card.style.opacity = `${1 - progress * 0.3}`;
+      card.classList.toggle('active', Math.round(scrollPos / height) === index);
+    });
+  });
+
+  // --- スワイプ検知（横方向） ---
+  let startX = 0;
+  let endX = 0;
+
+  scrollArea.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+  });
+
+  scrollArea.addEventListener('touchend', e => {
+    endX = e.changedTouches[0].clientX;
+    const diff = endX - startX;
+
+    // 左スワイプ（→ 詳細モーダル開く）
+    if (diff < -80) {
+      openModal();
+    }
+  });
+  
+  scrollArea.addEventListener('clicked', e => openModal());
+
+  // モーダル内スワイプで閉じる
+  let modalStartX = 0;
+  modal.addEventListener('touchstart', e => modalStartX = e.touches[0].clientX);
+  modal.addEventListener('touchend', e => {
+    const modalDiff = e.changedTouches[0].clientX - modalStartX;
+    if (modalDiff > 80) closeModalFn();
+  });
+
+  // ボタンで閉じる
+  closeBtn.addEventListener('click', closeModalFn);
+
+  function openModal() {
+    const activeCard = document.querySelector('.card.active');
+    const index = Array.from(cards).indexOf(activeCard);
+    const data = index >= 0 ? cards[index].textContent.trim() : '詳細情報';
+    modalContent.innerHTML = `<h2>${data}</h2><p>ここに動画の詳細情報が入ります。</p>`;
+    modal.classList.add('open');
+  }
+
+  function closeModalFn() {
+    modal.classList.remove('open');
+  }
+
+  // ▼ タブ切り替え処理
+  function showPage(tabName) {
+    containers.forEach(p => p.classList.remove('active'));
+    document.getElementById(tabName).classList.add('active');
+  }
+  
+  // --- ✅ タブ切り替え ---
+  tabs.forEach(tab => {
+    const name = tab.dataset.tab;
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        const n = t.dataset.tab;
+        const img = t.querySelector('img');
+        if (t === tab) {
+          t.classList.add('active');
+          img.src = `https://kkkkame0721.github.io/demoApp/icon/${n}_active.svg`;
+        } else {
+          t.classList.remove('active');
+          img.src = `https://kkkkame0721.github.io/demoApp/icon/${n}.svg`;
+        }
+      });
+      showPage(name);
+    });
+  });
+  
+  // ▼ コレクション → 動画ページへ
+  collectionGrid.addEventListener('click', e => {
+    if (e.target.tagName === 'IMG') {
+      showPage('scrollArea');
+    }
+  });
+  // ▼ 動画ページ ← 戻る
+  backBtn.addEventListener('click', () => {
+    showPage('collection');
+  });
+</script>
+</body>
+</html>
+
   html, body {
     margin: 0;
     padding: 0;
@@ -330,3 +662,4 @@
 </script>
 </body>
 </html>
+
