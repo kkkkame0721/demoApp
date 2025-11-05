@@ -11,19 +11,34 @@
     padding: 0;
     overflow: hidden;
     height: 100vh;
-    font-family: "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro","Rounded Mplus 1c", "Yu Gothic Rounded", "Noto Sans JP",sans-serif;
+    font-family: "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro","Rounded Mplus 1c", "Yu Gothic Rounded", "Noto Sans JP", sans-serif;
   }
 
-  .container {
-    height: 100%;
-    width: 100%;
+  .page {
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(100%);
+    transition: transform 0.4s ease;
+    opacity: 0;
   }
-  .container.active {
-    display: block;
+  /* アクティブなページは中央に */
+  .page.active {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  .page.left {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+  .page.right {
+    transform: translateX(100%);
+    opacity: 1;
   }
   
   /* --- ✅ 上部タイトルバー --- */
@@ -41,6 +56,9 @@
     padding: 0 1rem;
     box-sizing: border-box;
     z-index: 30;
+  }
+  .title-bar.hidden {
+    display: none;
   }
 
   /* ハンバーガーメニューアイコン */
@@ -78,6 +96,9 @@
     bottom: 70px;
     left: 0px;
     z-index: 40;
+  }
+  .page-content #homeBottomToTicket {
+    cursor: pointer;
   }
 
   .card {
@@ -164,7 +185,7 @@
     position: fixed;
     top: 16px;
     left: 16px;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0);
     color: white;
     border: none;
     border-radius: 50%;
@@ -224,50 +245,46 @@
 </style>
 </head>
 <body>
-  <div class="container active" id="home">
-    <div class="title-bar">
-      <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg" alt="menu" class="menu-icon" />
-      <h1 class="page-title">ホーム</h1>
-    </div>
+  <div class="title-bar" id="titleBar">
+    <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg" alt="menu" class="menu-icon" />
+    <h1 class="page-title" id="pageTitle">タイトルバー</h1>
+  </div>
+  
+  <div class="page active" id="home" data-tabname="ホーム">
     <div class="page-content">
       <img src="https://kkkkame0721.github.io/demoApp/img/home_content.svg?ver=1.1" id="homeContent" />
-      <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom.svg" id="homeBottom" />
+      <div id="homeBottom">
+        <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom_1.svg" id="homeBottomToTicket" />
+        <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom_2.svg" />
+      </div>
     </div>
   </div>
   
-  <div class="container" id="ticket">
-    <div class="title-bar">
-      <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg" alt="menu" class="menu-icon" />
-      <h1 class="page-title">チケット管理</h1>
-    </div>
+  <div class="page" id="ticket" data-tabname="チケット管理">
     <div class="page-content">
       <img src="https://kkkkame0721.github.io/demoApp/img/ticket_content.svg" id="ticketContent" />
     </div>
   </div>
   
-  <div class="container" id="collection">
-    <div class="title-bar">
-      <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg" alt="menu" class="menu-icon" />
-      <h1 class="page-title">コレクション</h1>
-    </div>
+  <div class="page" id="collection" data-tabname="コレクション">
     <div class="page-content">
       <div class="collection-grid" id="collectionGrid">
       </div>
     </div>
   </div>
   
-  <div class="container" id="scrollArea">
+  <div class="page" id="scrollArea">
     <button class="back-btn" id="backBtn">←</button>
+    <!-- 詳細モーダル -->
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        詳細ページ
+        <span class="close-btn" id="closeModal">✕</span>
+      </div>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
   </div>
 
-  <!-- 詳細モーダル -->
-  <div class="modal" id="modal">
-    <div class="modal-header">
-      詳細ページ
-      <span class="close-btn" id="closeModal">✕</span>
-    </div>
-    <div class="modal-content" id="modalContent"></div>
-  </div>
 
   <!-- ✅ ボトムバー -->
   <div class="tab-bar" id="tabBar">
@@ -286,7 +303,7 @@
   </div>
 
 <script>
-  const containers = document.querySelectorAll('.container');
+  const pages = document.querySelectorAll('.page');
   const scrollArea = document.getElementById('scrollArea');
   const modal = document.getElementById('modal');
   const modalContent = document.getElementById('modalContent');
@@ -295,6 +312,7 @@
   const collectionGrid = document.getElementById('collectionGrid');
   const backBtn = document.getElementById('backBtn');
   let cards = [];
+  let currentPage = document.getElementById("home");
 
   // --- JSONデータ取得 ---
   fetch('https://kkkkame0721.github.io/demoApp/data.json?ver='+Date.now())
@@ -328,6 +346,7 @@
       card.style.transform = `scale(${1 - progress * 0.05})`;
       card.style.opacity = `${1 - progress * 0.3}`;
       card.classList.toggle('active', Math.round(scrollPos / height) === index);
+      card.addEventListener("click", openModal);
     });
   });
 
@@ -349,8 +368,6 @@
     }
   });
   
-  scrollArea.addEventListener('clicked', e => openModal());
-
   // モーダル内スワイプで閉じる
   let modalStartX = 0;
   modal.addEventListener('touchstart', e => modalStartX = e.touches[0].clientX);
@@ -376,11 +393,8 @@
     backBtn.classList.add("active");
   }
 
-  // ▼ タブ切り替え処理
+  // ▼ タブ切り替え処理（最重要）
   function showPage(tabName) {
-    //ページ切り替え
-    containers.forEach(p => p.classList.remove('active'));
-    document.getElementById(tabName).classList.add('active');
     //タブバー切り替え
     tabs.forEach(t => {
       const n = t.dataset.tab;
@@ -393,6 +407,47 @@
         img.src = `https://kkkkame0721.github.io/demoApp/icon/${n}.svg`;
       }
     });
+    //ページ切り替え
+    const targetPage = document.getElementById(tabName);
+    const targetPageName = targetPage.dataset.tabname;
+    document.getElementById("pageTitle").textContent = targetPageName;
+    if (targetPage.id === currentPage.id) return;
+    
+    // タイトルバーの表示 / 非表示切り替え
+    const titleBar = document.getElementById("titleBar");
+    if (targetPage.id === "scrollArea") {
+      titleBar.classList.add("hidden");
+    } else {
+      titleBar.classList.remove("hidden");
+    }
+
+    //順番を調べる
+    const tabOrder = ["home", "ticket", "collection", "scrollArea"];
+    const currentIndex = tabOrder.indexOf(currentPage.id);
+    const targetIndex = tabOrder.indexOf(targetPage.id);
+    const isForward = targetIndex > currentIndex;
+    
+    // 準備：ターゲットを左外 or 右外に置く
+    targetPage.classList.remove('left','right','active');
+    targetPage.classList.add(isForward ? 'right' : 'left');
+    // ✅ アニメーション完了後にクラスを消す
+    currentPage.addEventListener('transitionend', () => {
+      currentPage.classList.remove('left', 'right');
+    }, { once: true });
+
+    // force reflow（ブラウザに状態を認識させる）
+    targetPage.offsetHeight;
+
+    // 現在ページを出す
+    currentPage.classList.remove('active');
+    currentPage.classList.add(isForward ? 'left' : 'right');
+    currentPage.offsetHeight;
+
+    // ターゲットを中央に入れる
+    targetPage.classList.remove('right','left');
+    targetPage.classList.add('active');
+
+    currentPage = targetPage;
   }
   
   // --- ✅ タブ切り替え ---
@@ -402,6 +457,9 @@
       showPage(name);
     });
   });
+  
+  //ホーム下部 → チケットへ
+  document.getElementById("homeBottomToTicket").addEventListener("click", () => showPage("ticket"));
   
   // ▼ コレクション → 動画ページへ
   collectionGrid.addEventListener('click', e => {
