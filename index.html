@@ -91,16 +91,33 @@
   .page-content img{
     width: 100%;
   }
-  .page-content #homeBottom {
+  
+  /* ホーム画面下部の画像 */
+  .home-bottom {
     position: fixed;
     bottom: 70px;
-    left: 0px;
-    z-index: 40;
+    left: 0;
+    width: 100%;
+    z-index: 850;
+    padding: 0 16px;
+    box-sizing: border-box;
+    transition: opacity 150ms ease;
   }
-  .page-content #homeBottomToTicket {
+  .home-bottom img {
+    max-width: 100%;
+    height: auto;
+  }
+  .home-bottom #homeBottomToTicket {
     cursor: pointer;
   }
+  
+  /* チケット管理ページの動画 */
+  .ticket-animation {
+    width: 100%;
+    height: 80vh;
+  }
 
+  /* 縦画面動画 */
   .card {
     position: relative;
     height: 100vh;
@@ -126,34 +143,43 @@
   .modal {
     position: fixed;
     top: 0;
-    right: -100%;
+    right: -96%;
     width: 100%;
-    height: 100%;
+    height: 94vh;
     background: white;
-    color: #333;
+    color: #757575;
     transition: right 0.4s ease;
     z-index: 10;
-    box-shadow: -4px 0 10px rgba(0,0,0,0.3);
-    overflow-y: auto;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    overflow: hidden;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+  }
+  
+  .modal.hidden {
+    display: none;
   }
 
   .modal.open {
-    right: 0;
+    right: 15px;
+  }
+  
+  .modal-content {
+    padding-left: 32px;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .modal-header {
     padding: 1rem;
-    background: #222;
-    color: white;
+    background: white;
+    color: #757575;
     font-size: 1.2rem;
   }
 
-  .modal-content {
-    padding: 1.5rem;
-  }
-
   .close-btn {
-    color: #fff;
+    color: #757575;
     float: right;
     font-size: 1.2rem;
     cursor: pointer;
@@ -245,24 +271,29 @@
 </style>
 </head>
 <body>
+  <!-- タイトルバー -->
   <div class="title-bar" id="titleBar">
     <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg" alt="menu" class="menu-icon" />
     <h1 class="page-title" id="pageTitle">タイトルバー</h1>
   </div>
   
+  <!-- ホームタブ -->
   <div class="page active" id="home" data-tabname="ホーム">
     <div class="page-content">
       <img src="https://kkkkame0721.github.io/demoApp/img/home_content.svg?ver=1.1" id="homeContent" />
-      <div id="homeBottom">
-        <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom_1.svg" id="homeBottomToTicket" />
-        <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom_2.svg" />
-      </div>
     </div>
   </div>
-  
+  <!-- ホームタブ下部の固定画像 -->
+  <div class="home-bottom" id="homeBottom">
+    <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom_1.svg" id="homeBottomToTicket" />
+    <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom_2.svg" />
+  </div>
+  <!-- チケットタブ -->
   <div class="page" id="ticket" data-tabname="チケット管理">
     <div class="page-content">
-      <img src="https://kkkkame0721.github.io/demoApp/img/ticket_content.svg" id="ticketContent" />
+      <video class="ticket-animation" id="ticketAnimation" playsinline muted>
+        <source src="https://kkkkame0721.github.io/demoApp/img/ticket_movie.mp4" type="video/mp4">
+      </video>
     </div>
   </div>
   
@@ -274,16 +305,50 @@
   </div>
   
   <div class="page" id="scrollArea">
-    <button class="back-btn" id="backBtn">←</button>
-    <!-- 詳細モーダル -->
-    <div class="modal" id="modal">
+  </div>
+  <button class="back-btn" id="backBtn">←</button>
+  <!-- 詳細モーダル -->
+  <div class="modal hidden" id="modal">
+    <div class="modal-content">
       <div class="modal-header">
-        詳細ページ
+        <span class="modal-title">詳細ページ</span>
         <span class="close-btn" id="closeModal">✕</span>
       </div>
-      <div class="modal-content" id="modalContent"></div>
+
+      <div class="modal-body">
+
+        <!-- ① 上部の大きい画像 -->
+        <div class="modal-hero">
+          <img id="modalHeroImage" src="https://kkkkame0721.github.io/demoApp/img/full_ticket.svg" alt="ticket image">
+        </div>
+
+        <!-- ② イベント詳細セクション -->
+        <section class="modal-section" id="eventSection">
+          <h2 class="section-title">イベント詳細</h2>
+
+          <div class="event-content">
+            <img id="eventImage" src="https://placehold.jp/360x120.png" alt="event thumbnail">
+            <div class="event-text">
+              <h3 id="eventTitle">タイトルが入ります</h3>
+              <p id="eventDate">日付が入ります</p>
+              <p id="eventDescription">説明文が入ります</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ③ 詳細情報セクション -->
+        <section class="modal-section" id="detailSection">
+          <h2 class="section-title">詳細情報</h2>
+
+          <p><strong>撮影場所：</strong><span id="eventLocation">未設定</span></p>
+          <p><strong>撮影日時：</strong><span id="eventRecordedAt">未設定</span></p>
+          <p><strong>メモ：</strong><span id="eventNotes">特になし</span></p>
+        </section>
+
+      </div>
     </div>
   </div>
+
 
 
   <!-- ✅ ボトムバー -->
@@ -314,6 +379,14 @@
   let cards = [];
   let currentPage = document.getElementById("home");
 
+  //チケットアニメーション（押すと始まる）
+  const video = document.getElementById("ticketAnimation");
+  video.addEventListener("click", () => video.play());
+  video.addEventListener("endedd", () => {
+    video.pause();
+    video.currentTime = 0;
+  });
+  
   // --- JSONデータ取得 ---
   fetch('https://kkkkame0721.github.io/demoApp/data.json?ver='+Date.now())
     .then(res => res.json())
@@ -379,11 +452,10 @@
   // ボタンで閉じる
   closeBtn.addEventListener('click', closeModalFn);
 
+  //モーダルを開く関数
   function openModal() {
     const activeCard = document.querySelector('.card.active');
     const index = Array.from(cards).indexOf(activeCard);
-    const data = index >= 0 ? cards[index].textContent.trim() : '詳細情報';
-    modalContent.innerHTML = `<h2>${data}</h2><p>ここに動画の詳細情報が入ります。</p>`;
     modal.classList.add('open');
     backBtn.classList.remove("active");
   }
@@ -413,12 +485,22 @@
     document.getElementById("pageTitle").textContent = targetPageName;
     if (targetPage.id === currentPage.id) return;
     
-    // タイトルバーの表示 / 非表示切り替え
+    // モーダル、タイトルバーの表示 / 非表示切り替え
     const titleBar = document.getElementById("titleBar");
     if (targetPage.id === "scrollArea") {
       titleBar.classList.add("hidden");
+      modal.classList.remove("open","hidden");
     } else {
       titleBar.classList.remove("hidden");
+      modal.classList.remove("open");
+      modal.classList.add("hidden");
+    }
+    // ホーム下部画像の表示／非表示切り替え
+    document.getElementById("homeBottom").style.opacity = (targetPage.id === "home") ? 1 : 0;
+    // チケットアニメーションのリセット
+    if(targetPage.id !== "ticket") {
+      video.pause();
+      video.currentTime = 0;
     }
 
     //順番を調べる
