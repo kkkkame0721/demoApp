@@ -67,10 +67,9 @@
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-      width: 24px;
+    width: 24px;
     height: 24px;
     margin-right: 1rem;
-    cursor: pointer;
   }
 
   /* タイトル文字 */
@@ -163,11 +162,11 @@
   }
 
   .modal.open {
-    right: 15px;
+    right: 0;
   }
   
   .modal-content {
-    padding-left: 32px;
+    padding-left: 16px;
     height: 100%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -427,19 +426,20 @@
 
   // --- スワイプ検知（横方向） ---
   let startX = 0;
-  let endX = 0;
 
   scrollArea.addEventListener('touchstart', e => {
     startX = e.touches[0].clientX;
   });
 
   scrollArea.addEventListener('touchend', e => {
-    endX = e.changedTouches[0].clientX;
+    const endX = e.changedTouches[0].clientX;
     const diff = endX - startX;
 
-    // 左スワイプ（→ 詳細モーダル開く）
-    if (diff < -80) {
+    // 左スワイプ→詳細モーダル開く、右スワイプ→コレクションページに戻る
+    if (startX > 300 && diff < -80) {
       openModal();
+    } else if (startX < 100 && diff > 80) {
+      showPage("collection");
     }
   });
   
@@ -448,28 +448,28 @@
   modal.addEventListener('touchstart', e => modalStartX = e.touches[0].clientX);
   modal.addEventListener('touchend', e => {
     const modalDiff = e.changedTouches[0].clientX - modalStartX;
-    if (modalDiff > 80) closeModalFn();
+    if (modalStartX < 100 && modalDiff > 80) {
+      closeModal();
+    }
   });
-
   // ボタンで閉じる
-  closeBtn.addEventListener('click', closeModalFn);
+  closeBtn.addEventListener('click', closeModal);
 
-  //モーダルを開く関数
+  // モーダルを開く関数
   function openModal() {
     const activeCard = document.querySelector('.card.active');
     const index = Array.from(cards).indexOf(activeCard);
     modal.classList.add('open');
     backBtn.classList.remove("active");
   }
-
-  function closeModalFn() {
+  // モーダルを閉じる関数
+  function closeModal() {
     modal.classList.remove('open');
     backBtn.classList.add("active");
   }
-
-  // ▼ タブ切り替え処理（最重要）
-  function showPage(tabName) {
-    //タブバー切り替え
+  
+  //タブバー切り替え処理
+  function tabChange (tabName) {
     tabs.forEach(t => {
       const n = t.dataset.tab;
       const img = t.querySelector('img');
@@ -481,14 +481,19 @@
         img.src = `https://kkkkame0721.github.io/demoApp/icon/${n}.svg`;
       }
     });
-    //ページ切り替え
-    const targetPage = document.getElementById(tabName);
-    const targetPageName = targetPage.dataset.tabname;
-    document.getElementById("pageTitle").textContent = targetPageName;
-    if (targetPage.id === currentPage.id) return;
-    
-    // モーダル、タイトルバーの表示 / 非表示切り替え
+  }
+  
+  // 動画のリセット
+  function animationReset (video) {
+    video.pause();
+    video.currentTime = 0;
+  }
+  
+  // 表示切り替え系
+  function displayUpdate (targetPage) {
+    // モーダル、タイトルバーの表示・非表示切り替え
     const titleBar = document.getElementById("titleBar");
+    
     if (targetPage.id === "scrollArea") {
       titleBar.classList.add("hidden");
       modal.classList.remove("open","hidden");
@@ -497,15 +502,19 @@
       modal.classList.remove("open");
       modal.classList.add("hidden");
     }
-    // ホーム下部画像の表示／非表示切り替え
+    
+    // ホーム下部画像の表示・非表示切り替え
     document.getElementById("homeBottom").style.opacity = (targetPage.id === "home") ? 1 : 0;
+    
     // チケットアニメーションのリセット
     if(targetPage.id !== "ticket") {
-      video.pause();
-      video.currentTime = 0;
+      animationReset(video);
     }
-
-    //順番を調べる
+  }
+  
+  //　スライドアニメーション
+  function slideAnimation (targetPage) {
+    // 準備：順番を調べる
     const tabOrder = ["home", "ticket", "collection", "scrollArea"];
     const currentIndex = tabOrder.indexOf(currentPage.id);
     const targetIndex = tabOrder.indexOf(targetPage.id);
@@ -514,7 +523,7 @@
     // 準備：ターゲットを左外 or 右外に置く
     targetPage.classList.remove('left','right','active');
     targetPage.classList.add(isForward ? 'right' : 'left');
-    // ✅ アニメーション完了後にクラスを消す
+    // アニメーション完了後にクラスを消す
     currentPage.addEventListener('transitionend', () => {
       currentPage.classList.remove('left', 'right');
     }, { once: true });
@@ -533,8 +542,29 @@
 
     currentPage = targetPage;
   }
+
+  /* --- ページ表示処理 --- */
+  function showPage(tabName) {
+    const targetPage = document.getElementById(tabName);
+    
+    // タブバー切り替え
+    tabChange(tabName);
+    
+    // タイトルバー表示切り替え
+    document.getElementById("pageTitle").textContent = targetPage.dataset.tabname;
+    
+    // もし移動前後が同じページなら以降は無視する
+    if (targetPage.id === currentPage.id) return;
+    
+    // 表示切り替え
+    displayUpdate(targetPage);
+
+    // タブスライドアニメーション処理
+    slideAnimation(targetPage);
+  }
   
-  // --- ✅ タブ切り替え ---
+  /* --- 関数登録系 --- */
+  // タブアイコンに関数を登録
   tabs.forEach(tab => {
     const name = tab.dataset.tab;
     tab.addEventListener('click', () => {
