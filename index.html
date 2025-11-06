@@ -139,6 +139,11 @@
     transform: scale(0.95);
     opacity: 0.7;
   }
+  
+  /* 縦動画 */
+  .card .card-video {
+    height: 100%;
+  }
 
   /* モーダルの基本構造 */
   .modal {
@@ -155,6 +160,17 @@
     border-bottom-left-radius: 16px;
     overflow: hidden;
     box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+  }
+  /* 👇 ここが「はみ出している部分」に相当するクリック領域 */
+  .modal #modal-swipe-handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px; /* ← 好きに調整 */
+    height: 100%;
+    cursor: pointer;
+    /* デバッグ中だけ色をつける（完成時は消す） */
+    background: rgba(255,0,0,0.2);
   }
   
   .modal.hidden {
@@ -279,7 +295,7 @@
   </div>
   
   <!-- ホームタブ -->
-  <div class="page active" id="home" data-tabname="ホーム">
+  <div class="page" id="home" data-tabname="ホーム">
     <div class="page-content">
       <img src="https://kkkkame0721.github.io/demoApp/img/home_content.svg?ver=1.1" id="homeContent" />
     </div>
@@ -297,19 +313,22 @@
       </video>
     </div>
   </div>
-  
+  <!-- コレクションタブ -->
   <div class="page" id="collection" data-tabname="コレクション">
     <div class="page-content">
       <div class="collection-grid" id="collectionGrid">
       </div>
     </div>
   </div>
-  
+  <!-- 縦動画タブ -->
   <div class="page" id="scrollArea">
   </div>
   <button class="back-btn" id="backBtn">←</button>
+  
   <!-- 詳細モーダル -->
   <div class="modal hidden" id="modal">
+    <div id="modal-swipe-handle"></div> <!-- ← ここがタップ領域 -->
+
     <div class="modal-content">
       <div class="modal-header">
         <span class="modal-title">詳細ページ</span>
@@ -354,7 +373,7 @@
 
   <!-- ✅ ボトムバー -->
   <div class="tab-bar" id="tabBar">
-    <div class="tab active" data-tab="home">
+    <div class="tab" data-tab="home">
       <img src="https://kkkkame0721.github.io/demoApp/icon/home.svg" alt="ホーム">
       <span>ホーム</span>
     </div>
@@ -363,78 +382,111 @@
       <span>チケット</span>
     </div>
     <div class="tab" data-tab="collection">
-      <img src="https://kkkkame0721.github.io/demoApp/icon/collection_active.svg" alt="コレクション">
+      <img src="https://kkkkame0721.github.io/demoApp/icon/collection.svg" alt="コレクション">
       <span>コレクション</span>
     </div>
   </div>
 
 <script>
   const pages = document.querySelectorAll('.page');
+  const cards = [];
   const scrollArea = document.getElementById('scrollArea');
   const modal = document.getElementById('modal');
   const modalContent = document.getElementById('modalContent');
+  const backBtn = document.getElementById('backBtn');
   const closeBtn = document.getElementById('closeModal');
   const tabs = document.querySelectorAll('.tab');
   const collectionGrid = document.getElementById('collectionGrid');
-  const backBtn = document.getElementById('backBtn');
-  let cards = [];
-  let currentPage = document.getElementById("home");
+  const DEFAULT_PAGE = "collection";
+  let currentPage = document.getElementById(DEFAULT_PAGE);
 
-  //チケットアニメーション（押すと始まる）
-  const video = document.getElementById("ticketAnimation");
-  video.addEventListener("click", () => video.play());
-  video.addEventListener("endedd", () => {
-    video.pause();
-    video.currentTime = 0;
-  });
-  
-  // --- JSONデータ取得 ---
+  /* --- JSONデータ取得 → カード要素生成 --- */
   fetch('https://kkkkame0721.github.io/demoApp/data.json?ver='+Date.now())
     .then(res => res.json())
     .then(data => {
       data.forEach(item => {
         const card = document.createElement('div');
+        const id = item.id;
         card.classList.add('card');
         card.innerHTML = `
+          <video class="card-video" id=${item.id} playsinline muted>
+            <source src=${item.video} type="video/mp4">
+          </video>
           <div class="info">
             ${item.title}
             <br>
             ${item.date}
           </div>
         `;
+        // 再生が終わったら最初に戻す
+        const v = card.querySelector(".card-video");
+        v.addEventListener("ended", () => {
+          animationReset(v);
+        });
+        
         scrollArea.appendChild(card);
+        cards.push(card);
+        
+        // サムネイル設定
         const thumb = document.createElement('img');
+        thumb.classList.add("thumbnail");
         thumb.src = item.thumbnail;
+        thumb.dataset.thumbid = item.id;
+        
+        // サムネイルクリック時の挙動を登録
+        thumb.addEventListener("click", e => {
+          const targetId = e.target.dataset.thumbid;
+          const targetIndex = data.findIndex(item => item.id === targetId);
+
+          // 全ての動画状況をリセットしてからscrollAreaへ遷移
+          allCardVideoStop();
+          showPage("scrollArea");
+
+          // 遷移が終わった後にスクロール位置を調整し、再生
+          requestAnimationFrame(() => {
+            const height = window.innerHeight;
+            scrollArea.scrollTop = targetIndex * height;
+            playVideo(targetId);
+          });
+        });
+        
         collectionGrid.appendChild(thumb);
       });
-      cards = document.querySelectorAll('.card');
     });
-
-  // --- 縦スクロールのアニメーション制御 ---
-  scrollArea.addEventListener('scroll', () => {
+  
+  /* --- 縦スクロールアニメーション制御 --- */
+  function updateVideoPlayback() {
     const scrollPos = scrollArea.scrollTop;
     const height = window.innerHeight;
+
     cards.forEach((card, index) => {
+      const video = card.querySelector(".card-video");
       const offset = Math.abs(scrollPos - index * height);
       const progress = Math.min(offset / height, 1);
+
+      // スケール & 透明度
       card.style.transform = `scale(${1 - progress * 0.05})`;
       card.style.opacity = `${1 - progress * 0.3}`;
-      card.classList.toggle('active', Math.round(scrollPos / height) === index);
-      card.addEventListener("click", openModal);
+
+      // ★ 画面中央に一番近いカードだけ再生、それ以外停止
+      if (offset < height * 0.4) {
+        if (video.paused) {
+          video.play();
+        }
+      } else {
+        animationReset(video);
+      }
     });
-  });
+  }
 
-  // --- スワイプ検知（横方向） ---
+  /* --- スワイプ関連 --- */
   let startX = 0;
-
   scrollArea.addEventListener('touchstart', e => {
     startX = e.touches[0].clientX;
   });
-
   scrollArea.addEventListener('touchend', e => {
     const endX = e.changedTouches[0].clientX;
     const diff = endX - startX;
-
     // 左スワイプ→詳細モーダル開く、右スワイプ→コレクションページに戻る
     if (startX > 300 && diff < -80) {
       openModal();
@@ -452,7 +504,7 @@
       closeModal();
     }
   });
-  // ボタンで閉じる
+  // ボタンでモーダルを閉じる
   closeBtn.addEventListener('click', closeModal);
 
   // モーダルを開く関数
@@ -468,6 +520,35 @@
     backBtn.classList.add("active");
   }
   
+  
+  /* --- 表示切り替え系 --- */
+  // 動画のリセット
+  function animationReset (v) {
+    v.pause();
+    v.currentTime = 0;
+  }
+  
+  // 全縦動画の停止
+  function allCardVideoStop () {
+    cards.forEach(card => {
+      const video = card.querySelector(".card-video");
+      animationReset(video);
+    });
+  }
+  
+  //　動画の再生
+  function playVideo (targetId) {
+    const targetVideo = document.getElementById(targetId);
+    targetVideo.play();
+  }
+  
+  // チケットアニメーション（押すと始まる）
+  const ticketAnim = document.getElementById("ticketAnimation");
+  ticketAnim.addEventListener("click", () => ticketAnim.play());
+  ticketAnim.addEventListener("ended", () => {
+    animationReset(ticketAnim);
+  });
+  
   //タブバー切り替え処理
   function tabChange (tabName) {
     tabs.forEach(t => {
@@ -481,35 +562,6 @@
         img.src = `https://kkkkame0721.github.io/demoApp/icon/${n}.svg`;
       }
     });
-  }
-  
-  // 動画のリセット
-  function animationReset (video) {
-    video.pause();
-    video.currentTime = 0;
-  }
-  
-  // 表示切り替え系
-  function displayUpdate (targetPage) {
-    // モーダル、タイトルバーの表示・非表示切り替え
-    const titleBar = document.getElementById("titleBar");
-    
-    if (targetPage.id === "scrollArea") {
-      titleBar.classList.add("hidden");
-      modal.classList.remove("open","hidden");
-    } else {
-      titleBar.classList.remove("hidden");
-      modal.classList.remove("open");
-      modal.classList.add("hidden");
-    }
-    
-    // ホーム下部画像の表示・非表示切り替え
-    document.getElementById("homeBottom").style.opacity = (targetPage.id === "home") ? 1 : 0;
-    
-    // チケットアニメーションのリセット
-    if(targetPage.id !== "ticket") {
-      animationReset(video);
-    }
   }
   
   //　スライドアニメーション
@@ -542,6 +594,31 @@
 
     currentPage = targetPage;
   }
+  
+  // 表示系まとめ
+  function displayUpdate (targetPage) {
+    // モーダル、タイトルバーの表示・非表示切り替え
+    const titleBar = document.getElementById("titleBar");
+    
+    if (targetPage.id === "scrollArea") {
+      titleBar.classList.add("hidden");
+      modal.classList.remove("open","hidden");
+      backBtn.classList.add("active");
+    } else {
+      titleBar.classList.remove("hidden");
+      modal.classList.remove("open");
+      modal.classList.add("hidden");
+      backBtn.classList.remove("active");
+    }
+    
+    // ホーム下部画像の表示・非表示切り替え
+    document.getElementById("homeBottom").style.opacity = (targetPage.id === "home") ? 1 : 0;
+    
+    // チケットアニメーションのリセット
+    if(targetPage.id !== "ticket") {
+      animationReset(ticketAnim);
+    }
+  }
 
   /* --- ページ表示処理 --- */
   function showPage(tabName) {
@@ -553,43 +630,61 @@
     // タイトルバー表示切り替え
     document.getElementById("pageTitle").textContent = targetPage.dataset.tabname;
     
-    // もし移動前後が同じページなら以降は無視する
-    if (targetPage.id === currentPage.id) return;
-    
     // 表示切り替え
     displayUpdate(targetPage);
-
+    
     // タブスライドアニメーション処理
-    slideAnimation(targetPage);
+    // もし移動前後が同じページならアニメーションは無視する
+    if (targetPage.id !== currentPage.id) slideAnimation(targetPage);
   }
   
-  /* --- 関数登録系 --- */
-  // タブアイコンに関数を登録
-  tabs.forEach(tab => {
-    const name = tab.dataset.tab;
-    tab.addEventListener('click', () => {
-      showPage(name);
+  /* --- 初期化 --- */
+  function init () {
+    /* --- 関数登録系 --- */
+    
+    // スクロールイベント登録
+    scrollArea.addEventListener("scroll", updateVideoPlayback);
+    
+    // 動画クリックで再生
+    scrollArea.addEventListener("click", e => {
+      const target = e.target;
+      if(target.classList.contains("card-video")) {
+        if(target.paused) {
+          target.play();
+        } else {
+          target.pause();
+        }
+      }
     });
-  });
+    
+    // タブアイコンに関数を登録
+    tabs.forEach(tab => {
+      const name = tab.dataset.tab;
+      tab.addEventListener('click', () => {
+        showPage(name);
+      });
+    });
+
+    // ホーム下部画像 → チケットページへ
+    document.getElementById("homeBottomToTicket").addEventListener("click", () => showPage("ticket"));
+
+    // 動画ページ ← 戻る
+    backBtn.addEventListener('click', () => {
+      showPage('collection');
+    });
+    
+    /* --- デフォルトページ表示 --- */
+    const p = document.getElementById(DEFAULT_PAGE);
+    p.classList.add("active");
+    showPage(DEFAULT_PAGE);
+    
+    // デバッグ用
+    document.getElementById("modal-swipe-handle").addEventListener("click", openModal);
+  }
   
-  //ホーム下部 → チケットへ
-  document.getElementById("homeBottomToTicket").addEventListener("click", () => showPage("ticket"));
-  
-  // ▼ コレクション → 動画ページへ
-  collectionGrid.addEventListener('click', e => {
-    if (e.target.tagName === 'IMG') {
-      showPage('scrollArea');
-      backBtn.classList.add("active");
-    }
-  });
-  // ▼ 動画ページ ← 戻る
-  backBtn.addEventListener('click', () => {
-    showPage('collection');
-    backBtn.classList.remove("active");
-  });
-  
+  // ロード時、初期化実行
   document.addEventListener('DOMContentLoaded', () => {
-    showPage("home");
+    init();
   });
 </script>
 </body>
