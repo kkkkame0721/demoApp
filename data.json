@@ -8,12 +8,12 @@
     "date": "2025/11/1(土)"
   },
   {
-    "id": "video2",
-    "title": "動画2",
-    "video": "https://kkkkame0721.github.io/demoApp/video/ycsj-nagoya.mp4",
-    "thumbnail": "https://placehold.jp/375x812.png?text=動画2",
+    "id": "sekalive4th",
+    "title": "セカライ4th",
+    "video": "https://kkkkame0721.github.io/demoApp/video/sekalive4th.mp4",
+    "thumbnail": "https://kkkkame0721.github.io/demoApp/video/sekalive4th-thumbnail.jpg",
     "description": "動画2の説明文がここに入ります。",
-    "date": "2075/10/15"
+    "date": "2025/1/25(土)"
   },
   {
     "id": "video3",
