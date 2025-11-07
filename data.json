@@ -16,12 +16,12 @@
     "date": "2025/1/25(土)"
   },
   {
-    "id": "video3",
-    "title": "動画3",
-    "video": "https://kkkkame0721.github.io/demoApp/video/ycsj-nagoya.mp4",
-    "thumbnail": "https://placehold.jp/375x812.png?text=動画3",
+    "id": "hanakutashi",
+    "title": "花腐し",
+    "video": "https://kkkkame0721.github.io/demoApp/video/hanakutashi.mp4",
+    "thumbnail": "https://kkkkame0721.github.io/demoApp/video/hanakutashi-thumbnail.jpg",
     "description": "動画3の概要です。",
-    "date": "2075/10/09"
+    "date": "2023/11/10(金)"
   },
   {
     "id": "video4",
