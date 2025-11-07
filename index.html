@@ -41,7 +41,172 @@
     opacity: 1;
   }
   
-  /* --- ✅ 上部タイトルバー --- */
+  .page#ticket {
+    position: relative;
+  }
+  
+  /* --- チケットタブ関連 --- */
+  .ticket-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .ticket-tabs .tab-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 160px;
+    text-align: center;
+    background: #f5f5f5;
+    border: none;
+    font-size: 16px;
+  }
+
+  .ticket-tabs .tab-btn.active {
+    background: linear-gradient(to right, #FF54AF, #FF9A0B);
+    color: white;
+  }
+  
+  .ticket-list {
+    display: none;
+    padding: 12px;
+  }
+
+  .ticket-list.active {
+    display: block;
+  }
+
+  .ticket-card {
+    background: white;
+    padding: 12px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  /* --- チケット詳細パネル --- */
+  #ticket-detail-panel {
+    position: absolute;
+    top: 90px;
+    bottom: 60px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 50;
+
+    transform: translateX(100%);
+    transition: transform 0.35s ease;
+    overflow-y: auto;
+  }
+
+  /* パネルを表示時 */
+  #ticket-detail-panel.active {
+    transform: translateX(0);
+  }
+
+  /* 上部 */
+  .detail-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #detail-back-btn {
+    font-size: 18px;
+  }
+  
+  /* 詳細パネル中部 */
+  .detail-body {
+    padding: 0 12px;
+  }
+  
+  /* 入場アニメーション */
+  .ticket-animation {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: none;
+  }
+  .ticket-animation.active {
+    display: block;
+  }
+  
+  /* 半券パネル本体 */
+  #stub-panel {
+    position: absolute;
+    top: 90px;
+    bottom: 60px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 60;
+    transform: translateX(100%);
+    transition: transform 0.35s ease;
+    overflow-y: auto;
+  }
+
+  /* 表示時 */
+  #stub-panel.active {
+    transform: translateX(0);
+  }
+
+  /* 上部（戻るボタン） */
+  .stub-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 12px;
+  }
+
+  /* カードデザイン */
+  .stub-card {
+    background: white;
+    padding: 16px;
+    margin: 0 12px;
+    text-align: center;
+  }
+
+  /* 半券画像 */
+  #stub-image {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  /* ボタン */
+  .stub-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  /* 汎用アクションボタン */
+  .action-btn {
+    padding: 12px;
+    border-radius: 800px;
+    background: linear-gradient(to right, #FF54AF, #FF9A0B);
+    color: white;
+    border: none;
+    font-size: 14px;
+    display: block;
+    width: 40vw;
+    margin: 0 auto;
+  }
+
+  
+  /* --- 上部タイトルバー --- */
   .title-bar {
     position: fixed;
     justify-content: center;
@@ -108,14 +273,6 @@
   }
   .home-bottom #homeBottomToTicket {
     cursor: pointer;
-  }
-  
-  /* チケット管理ページの動画 */
-  .ticket-animation {
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
   }
 
   /* 縦画面動画 */
@@ -244,7 +401,7 @@
     display: block;
   } 
   
-  /* --- ✅ ボトムタブバー --- */
+  /* --- ボトムタブバー --- */
   .tab-bar {
     position: fixed;
     bottom: 0;
@@ -285,6 +442,10 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  
+  * {
+    touch-action: pan-y; /* ← スマホで横スクロール無効化 */
+  }
 </style>
 </head>
 <body>
@@ -305,14 +466,39 @@
     <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom_1.svg" id="homeBottomToTicket" />
     <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom_2.svg" />
   </div>
+  
   <!-- チケットタブ -->
   <div class="page" id="ticket" data-tabname="チケット管理">
     <div class="page-content">
-      <video class="ticket-animation" id="ticketAnimation" playsinline muted>
-        <source src="https://kkkkame0721.github.io/demoApp/img/ticket_movie.mp4" type="video/mp4">
-      </video>
+      <!-- 開催前・開催済みタブ -->
+      <div class="ticket-tabs">
+        <button class="tab-btn active" data-target="pre-list">開催前チケット</button>
+        <button class="tab-btn" data-target="post-list">開催済みチケット</button>
+      </div>
+
+      <!-- 開催前チケット -->
+      <div id="pre-list" class="ticket-list active">
+        <div class="ticket-card">
+          <div class="ticket-title">ライブイベント A</div>
+          <div class="ticket-date">2025/12/01</div>
+        </div>
+
+        <div class="ticket-card">
+          <div class="ticket-title">展示会 B</div>
+          <div class="ticket-date">2026/01/15</div>
+        </div>
+      </div>
+
+      <!-- 開催済みチケット -->
+      <div id="post-list" class="ticket-list">
+        <div class="ticket-card used">
+          <div class="ticket-title">公演 C</div>
+          <div class="ticket-date">2025/08/22</div>
+        </div>
+      </div>
     </div>
   </div>
+  
   <!-- コレクションタブ -->
   <div class="page" id="collection" data-tabname="コレクション">
     <div class="page-content">
@@ -320,10 +506,39 @@
       </div>
     </div>
   </div>
+  
   <!-- 縦動画タブ -->
   <div class="page" id="scrollArea">
   </div>
   <button class="back-btn" id="backBtn">←</button>
+  
+  <!-- チケット詳細パネル -->
+  <div id="ticket-detail-panel">
+    <div class="detail-header">
+      <button id="detail-back-btn">←</button>
+      <span id="detail-title"></span>
+    </div>
+    <div class="detail-body" id="detail-body">
+    </div>
+  </div>
+  <!-- チケット詳細パネル内の半券パネル -->
+  <div id="stub-panel">
+    <div class="stub-header">
+      <button id="stub-back-btn">←</button>
+      <span>空白の半券</span>
+    </div>
+
+    <div class="stub-body">
+      <div class="stub-card">
+        <img id="stub-image" src="" alt="半券">
+        <div class="stub-actions">
+          <button class="action-btn">撮影する</button>
+          <button class="action-btn">写真・動画を選ぶ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   
   <!-- 詳細モーダル -->
   <div class="modal hidden" id="modal">
@@ -371,7 +586,7 @@
 
 
 
-  <!-- ✅ ボトムバー -->
+  <!-- ボトムバー -->
   <div class="tab-bar" id="tabBar">
     <div class="tab" data-tab="home">
       <img src="https://kkkkame0721.github.io/demoApp/icon/home.svg" alt="ホーム">
@@ -397,7 +612,7 @@
   const closeBtn = document.getElementById('closeModal');
   const tabs = document.querySelectorAll('.tab');
   const collectionGrid = document.getElementById('collectionGrid');
-  const DEFAULT_PAGE = "collection";
+  const DEFAULT_PAGE = "home";
   let currentPage = document.getElementById(DEFAULT_PAGE);
 
   /* --- JSONデータ取得 → カード要素生成 --- */
@@ -451,8 +666,19 @@
         });
         
         collectionGrid.appendChild(thumb);
+        
+        // 開催済みチケット生成
+        const postList = document.getElementById("post-list");
+        const usedCard = document.createElement("div");
+        usedCard.classList.add("ticket-card", "used");
+        usedCard.innerHTML = `
+          <div class="ticket-title">${item.title}</div>
+          <div class="ticket-date">${item.date}</div>
+        `;
+        postList.appendChild(usedCard);
       });
-    });
+    })
+  .then(init);
   
   /* --- 縦スクロールアニメーション制御 --- */
   function updateVideoPlayback() {
@@ -542,13 +768,6 @@
     targetVideo.play();
   }
   
-  // チケットアニメーション（押すと始まる）
-  const ticketAnim = document.getElementById("ticketAnimation");
-  ticketAnim.addEventListener("click", () => ticketAnim.play());
-  ticketAnim.addEventListener("ended", () => {
-    animationReset(ticketAnim);
-  });
-  
   //タブバー切り替え処理
   function tabChange (tabName) {
     tabs.forEach(t => {
@@ -614,10 +833,8 @@
     // ホーム下部画像の表示・非表示切り替え
     document.getElementById("homeBottom").style.opacity = (targetPage.id === "home") ? 1 : 0;
     
-    // チケットアニメーションのリセット
-    if(targetPage.id !== "ticket") {
-      animationReset(ticketAnim);
-    }
+    // チケット詳細ページのリセット
+    document.getElementById("ticket-detail-panel").classList.remove("active");
   }
 
   /* --- ページ表示処理 --- */
@@ -645,6 +862,76 @@
     // スクロールイベント登録
     scrollArea.addEventListener("scroll", updateVideoPlayback);
     
+    // チケット詳細パネル関連
+    const detailPanel = document.getElementById("ticket-detail-panel");
+    const detailTitle = document.getElementById("detail-title");
+    const detailBody = document.getElementById("detail-body");
+    const ticketBackBtn = document.getElementById("detail-back-btn");
+    const enterPanel = `
+      <button id="enter-btn" class="action-btn">入場する</button>
+      <video class="ticket-animation" id="ticketAnimation" playsinline muted>
+        <source src="https://kkkkame0721.github.io/demoApp/img/ticket_movie.mp4" type="video/mp4">
+      </video>
+    `;
+
+    // カードをクリックするとスライドイン
+    document.querySelectorAll(".ticket-card").forEach((card, index) => {
+      card.addEventListener("click", () => {
+
+        const title = card.querySelector(".ticket-title").textContent;
+        const date = card.querySelector(".ticket-date").textContent;
+
+        detailTitle.textContent = title;
+        detailBody.innerHTML = `
+          <div class="detail-section">
+            <h3>${title}</h3>
+            <p>${date}</p>
+            ${(index === 0) ? enterPanel : ''}
+            ${(index === 2) ? '<button id="stub-open-btn" class="action-btn">半券に記録する</button>': ''}
+            ${(index > 2) ? '<button class="action-btn" onclick=showPage("collection")>半券を見る</button>': ''}
+          </div>
+        `;
+        detailPanel.classList.add("active");
+
+        if(index === 0) {
+          // チケットアニメーション登録（押すと始まる）
+          const ticketAnim = document.getElementById("ticketAnimation");
+          ticketAnim.addEventListener("click", () => ticketAnim.play());
+          ticketAnim.addEventListener("ended", () => {
+            animationReset(ticketAnim);
+            ticketAnim.classList.remove("active");
+          });
+          // 入場ボタン → 動画再生紐付け
+          document.getElementById("enter-btn").addEventListener("click", () => {
+            animationReset(ticketAnim);
+            ticketAnim.classList.add("active");
+          });
+        }
+      });
+    });
+
+    // チケット詳細パネルから戻る
+    ticketBackBtn.addEventListener("click", () => {
+      detailPanel.classList.remove("active");
+    });
+    
+    // 半券パネル関連
+    const stubPanel = document.getElementById("stub-panel");
+    const stubImage = document.getElementById("stub-image");
+    const stubBackBtn = document.getElementById("stub-back-btn");
+    // 「半券を見る」クリックでスライドイン
+    detailPanel.addEventListener("click", e => {
+      if(e.target.id === "stub-open-btn") {
+        stubImage.src = "https://kkkkame0721.github.io/demoApp/img/ticket_blank.jpg";
+        stubPanel.classList.add("active");
+      }
+    });
+    // 戻る
+    stubBackBtn.addEventListener("click", () => {
+      stubPanel.classList.remove("active");
+    });
+
+    
     // 動画クリックで再生
     scrollArea.addEventListener("click", e => {
       const target = e.target;
@@ -668,6 +955,17 @@
     // ホーム下部画像 → チケットページへ
     document.getElementById("homeBottomToTicket").addEventListener("click", () => showPage("ticket"));
 
+    // チケットタブ内のタブ切り替え
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelector(".tab-btn.active").classList.remove("active");
+        btn.classList.add("active");
+
+        document.querySelector(".ticket-list.active").classList.remove("active");
+        document.getElementById(btn.dataset.target).classList.add("active");
+      });
+    });
+    
     // 動画ページ ← 戻る
     backBtn.addEventListener('click', () => {
       showPage('collection');
@@ -684,7 +982,7 @@
   
   // ロード時、初期化実行
   document.addEventListener('DOMContentLoaded', () => {
-    init();
+
   });
 </script>
 </body>
