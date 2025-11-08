@@ -5,13 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>スワイプ＋詳細モーダル</title>
 <style>
-
+  :root {
+    --titlebar-height: 90px;
+    --tabbar-height: 60px;
+  }
+  
   html, body {
     margin: 0;
     padding: 0;
     overflow: hidden;
     height: 100vh;
-    font-family: "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro","Rounded Mplus 1c", "Yu Gothic Rounded", "Noto Sans JP", sans-serif;
+    color: #333333;
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+               "Noto Sans JP", "Meiryo", sans-serif;
   }
 
   .page {
@@ -20,7 +26,7 @@
     scroll-behavior: smooth;
     position: absolute;
     top: 0;
-    left: 0;
+    bottom: 0;
     width: 100%;
     height: 100%;
     transform: translateX(100%);
@@ -59,6 +65,7 @@
     border-radius: 160px;
     text-align: center;
     background: #f5f5f5;
+    color: #333333;
     border: none;
     font-size: 16px;
   }
@@ -117,8 +124,11 @@
     gap: 8px;
   }
 
-  #detail-back-btn {
+  #detail-back-btn, #stub-back-btn {
     font-size: 18px;
+    background: transparent;
+    color: #333;
+    border: none;
   }
   
   /* 詳細パネル中部 */
@@ -138,50 +148,10 @@
   .ticket-animation.active {
     display: block;
   }
-  
-  /* 半券パネル本体 */
-  #stub-panel {
-    position: absolute;
-    top: 90px;
-    bottom: 60px;
-    left: 0;
-    width: 100%;
-    background: #fff;
-    z-index: 60;
-    transform: translateX(100%);
-    transition: transform 0.35s ease;
-    overflow-y: auto;
-  }
-
-  /* 表示時 */
-  #stub-panel.active {
-    transform: translateX(0);
-  }
-
-  /* 上部（戻るボタン） */
-  .stub-header {
-    position: sticky;
-    top: 0;
-    background: white;
-    padding: 12px 0;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0 12px;
-  }
-
-  /* カードデザイン */
-  .stub-card {
-    background: white;
-    padding: 16px;
-    margin: 0 12px;
-    text-align: center;
-  }
 
   /* 半券画像 */
   #stub-image {
-    width: 100%;
+    width: 80%;
     margin-bottom: 16px;
   }
 
@@ -195,7 +165,7 @@
   /* 汎用アクションボタン */
   .action-btn {
     padding: 12px;
-    border-radius: 800px;
+    border-radius: 100px;
     background: linear-gradient(to right, #FF54AF, #FF9A0B);
     color: white;
     border: none;
@@ -203,6 +173,8 @@
     display: block;
     width: 40vw;
     margin: 0 auto;
+    margin-top: 12px;
+    cursor: pointer;
   }
 
   
@@ -220,7 +192,7 @@
     align-items: center;
     padding: 0 1rem;
     box-sizing: border-box;
-    z-index: 30;
+    z-index: 70;
   }
   .title-bar.hidden {
     display: none;
@@ -241,15 +213,15 @@
   .page-title {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #333;
+    color: #333333;
     margin: 0;
   }
 
   /* ページ内容はタイトルバーの下から始まるように */
   .page-content {
-    padding-top: 90px;
-    padding-bottom: 60px; /* 下のタブバー分 */
     box-sizing: border-box;
+    padding-top: var(--titlebar-height);
+    padding-bottom: var(--tabbar-height);
   }
   
   .page-content img{
@@ -477,21 +449,21 @@
       <!-- 開催前チケット -->
       <div id="pre-list" class="ticket-list active">
         <div class="ticket-card">
-          <div class="ticket-title">ライブイベント A</div>
-          <div class="ticket-date">2025/12/01</div>
+          <div class="ticket-title">DUMMY NIGHT TOUR 2025 NAGOYA</div>
+          <div class="ticket-date">2025/11/14(金)</div>
         </div>
 
         <div class="ticket-card">
-          <div class="ticket-title">展示会 B</div>
-          <div class="ticket-date">2026/01/15</div>
+          <div class="ticket-title">ダミクエ リリース前特別体験会</div>
+          <div class="ticket-date">2026/01/11(日)</div>
         </div>
       </div>
 
       <!-- 開催済みチケット -->
       <div id="post-list" class="ticket-list">
         <div class="ticket-card used">
-          <div class="ticket-title">公演 C</div>
-          <div class="ticket-date">2025/08/22</div>
+          <div class="ticket-title">虚構博覧会「FAKE EXHIBITION 2025」</div>
+          <div class="ticket-date">2025/11/05(水)</div>
         </div>
       </div>
     </div>
@@ -517,23 +489,6 @@
       <span id="detail-title"></span>
     </div>
     <div class="detail-body" id="detail-body">
-    </div>
-  </div>
-  <!-- チケット詳細パネル内の半券パネル -->
-  <div id="stub-panel">
-    <div class="stub-header">
-      <button id="stub-back-btn">←</button>
-      <span>空白の半券</span>
-    </div>
-
-    <div class="stub-body">
-      <div class="stub-card">
-        <img id="stub-image" src="" alt="半券">
-        <div class="stub-actions">
-          <button class="action-btn">撮影する</button>
-          <button class="action-btn">写真・動画を選ぶ</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -669,6 +624,7 @@
         const postList = document.getElementById("post-list");
         const usedCard = document.createElement("div");
         usedCard.classList.add("ticket-card", "used");
+        usedCard.dataset.thumbid = item.id;
         usedCard.innerHTML = `
           <div class="ticket-title">${item.title}</div>
           <div class="ticket-date">${item.date}</div>
@@ -812,7 +768,7 @@
     currentPage = targetPage;
   }
   
-  // 表示系まとめ
+  /* --- 表示系まとめ --- */
   function displayUpdate (targetPage) {
     // モーダル、タイトルバーの表示・非表示切り替え
     const titleBar = document.getElementById("titleBar");
@@ -829,7 +785,7 @@
     }
     
     // ホーム下部画像の表示・非表示切り替え
-    document.getElementById("homeBottom").style.opacity = (targetPage.id === "home") ? 1 : 0;
+    document.getElementById("homeBottom").style.display = (targetPage.id === "home") ? "block" : "none";
     
     // チケット詳細ページのリセット
     document.getElementById("ticket-detail-panel").classList.remove("active");
@@ -866,6 +822,7 @@
     const detailBody = document.getElementById("detail-body");
     const ticketBackBtn = document.getElementById("detail-back-btn");
     const enterPanel = `
+      <div class="dummy-detail">名古屋ミュージックホール"ダミー" 東2ホール</div>
       <button id="enter-btn" class="action-btn">入場する</button>
       <video class="ticket-animation" id="ticketAnimation" playsinline muted>
         <source src="https://kkkkame0721.github.io/demoApp/img/ticket_movie.mp4" type="video/mp4">
@@ -879,14 +836,23 @@
         const title = card.querySelector(".ticket-title").textContent;
         const date = card.querySelector(".ticket-date").textContent;
 
-        detailTitle.textContent = title;
+        detailTitle.textContent = "チケット詳細";
         detailBody.innerHTML = `
           <div class="detail-section">
             <h3>${title}</h3>
-            <p>${date}</p>
+            <p>${(index === 0) ? date+" 18:00 開場 / 19:00 開演":date}</p>
             ${(index === 0) ? enterPanel : ''}
-            ${(index === 2) ? '<button id="stub-open-btn" class="action-btn">半券に記録する</button>': ''}
-            ${(index > 2) ? '<button class="action-btn" onclick=showPage("collection")>半券を見る</button>': ''}
+            ${(index === 2) ? `
+              <img id="stub-image" src="https://kkkkame0721.github.io/demoApp/img/ticket_blank.jpg" style="width: 60%; display: block; margin: 0 auto; border-radius: 12px;">
+              <div class="stub-actions">
+                <button class="action-btn">撮影する</button>
+                <button class="action-btn">写真・動画を選ぶ</button>
+              </div>
+            `: ''}
+            ${(index > 2) ? `
+              <img src="https://kkkkame0721.github.io/demoApp/video/${card.dataset.thumbid}-thumbnail.jpg" style="width: 60%; display: block; margin: 0 auto; border-radius: 12px;"/>
+              <button class="action-btn" onclick=showPage('collection')>コレクションへ</button>
+            `: ''}
           </div>
         `;
         detailPanel.classList.add("active");
@@ -912,23 +878,6 @@
     ticketBackBtn.addEventListener("click", () => {
       detailPanel.classList.remove("active");
     });
-    
-    // 半券パネル関連
-    const stubPanel = document.getElementById("stub-panel");
-    const stubImage = document.getElementById("stub-image");
-    const stubBackBtn = document.getElementById("stub-back-btn");
-    // 「半券を見る」クリックでスライドイン
-    detailPanel.addEventListener("click", e => {
-      if(e.target.id === "stub-open-btn") {
-        stubImage.src = "https://kkkkame0721.github.io/demoApp/img/ticket_blank.jpg";
-        stubPanel.classList.add("active");
-      }
-    });
-    // 戻る
-    stubBackBtn.addEventListener("click", () => {
-      stubPanel.classList.remove("active");
-    });
-
     
     // 動画クリックで再生
     scrollArea.addEventListener("click", e => {
