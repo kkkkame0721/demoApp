@@ -138,6 +138,10 @@
   }
   
   /* 入場アニメーション */
+  .animationContainer {
+    display: flex;
+    justify-content: center;
+  }
   .ticket-animation {
     height: calc(100dvh - var(--tabbar-height) - var(--titlebar-height));
     position: absolute;
@@ -490,6 +494,13 @@
       <button id="detail-back-btn">←</button>
       <span id="detail-title"></span>
     </div>
+    <!-- 入場アニメーション -->
+    <div class="animationContainer">
+      <video class="ticket-animation" id="ticketAnimation" playsinline muted>
+        <source src="https://kkkkame0721.github.io/demoApp/img/ticket_movie.mp4" type="video/mp4">
+      </video>
+    </div>
+    <!-- ここに詳細情報が入る -->
     <div class="detail-body" id="detail-body">
     </div>
   </div>
@@ -826,9 +837,6 @@
     const enterPanel = `
       <div class="dummy-detail">名古屋ミュージックホール"ダミー" 東2ホール</div>
       <button id="enter-btn" class="action-btn">入場する</button>
-      <video class="ticket-animation" id="ticketAnimation" playsinline muted>
-        <source src="https://kkkkame0721.github.io/demoApp/img/ticket_movie.mp4" type="video/mp4">
-      </video>
     `;
 
     // カードをクリックするとスライドイン
