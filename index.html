@@ -7,14 +7,15 @@
 <style>
   :root {
     --titlebar-height: 90px;
-    --tabbar-height: 60px;
+    --tabbar-height: calc(60px + env(safe-area-inset-bottom));
   }
   
   html, body {
+    width: 100vw;
+    height: 100vh;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    height: 100vh;
     color: #333333;
     font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans",
                "Noto Sans JP", "Meiryo", sans-serif;
@@ -138,12 +139,9 @@
   
   /* 入場アニメーション */
   .ticket-animation {
-    background: white;
-    height: calc(100vh - var(--tabbar-height) - var(--titlebar-height));
+    height: calc(100dvh - var(--tabbar-height) - var(--titlebar-height));
     position: absolute;
-    left: 0;
     top: 0;
-    bottom: 0;
     z-index: 100;
     display: none;
   }
