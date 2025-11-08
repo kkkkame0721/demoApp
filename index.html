@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>スワイプ＋詳細モーダル</title>
+<title>未来型半券サービスAkashic</title>
 <style>
   :root {
     --titlebar-height: 90px;
@@ -138,10 +138,12 @@
   
   /* 入場アニメーション */
   .ticket-animation {
-    width: 100%;
+    background: white;
+    height: calc(100vh - var(--tabbar-height) - var(--titlebar-height));
     position: absolute;
-    top: 0;
     left: 0;
+    top: 0;
+    bottom: 0;
     z-index: 100;
     display: none;
   }
@@ -198,7 +200,7 @@
     display: none;
   }
 
-  /* ハンバーガーメニューアイコン */
+  /* メニューアイコン */
   .menu-icon {
     position: absolute;
     left: 1rem;
@@ -207,6 +209,7 @@
     width: 24px;
     height: 24px;
     margin-right: 1rem;
+    cursor: pointer;
   }
 
   /* タイトル文字 */
@@ -331,8 +334,9 @@
 
   .info {
     position: absolute;
-    bottom: calc(60px + env(safe-area-inset-bottom));
-    left: calc(16px + env(safe-area-inset-left));
+    bottom: var(--tabbar-height, 60px);
+    padding-bottom: 1rem;
+    left: 16px;
     font-size: 1.1rem;
     text-shadow: 0 0 8px rgba(0,0,0,0.6);
   }
@@ -421,8 +425,8 @@
 <body>
   <!-- タイトルバー -->
   <div class="title-bar" id="titleBar">
-    <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg" alt="menu" class="menu-icon" />
-    <h1 class="page-title" id="pageTitle">タイトルバー</h1>
+    <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg?ver=1.1" alt="menu" class="menu-icon" onclick=showPage('home') />
+    <h1 class="page-title" id="pageTitle"></h1>
   </div>
   
   <!-- ホームタブ -->
@@ -578,7 +582,7 @@
         card.classList.add('card');
         card.innerHTML = `
           <video class="card-video" id=${item.id} playsinline muted>
-            <source src=${item.video} type="video/mp4">
+            <source src=${item.video+"?ver=1.1"} type="video/mp4">
           </video>
           <div class="info">
             ${item.title}
@@ -598,7 +602,7 @@
         // サムネイル設定
         const thumb = document.createElement('img');
         thumb.classList.add("thumbnail");
-        thumb.src = item.thumbnail;
+        thumb.src = item.thumbnail+"?ver=1.3";
         thumb.dataset.thumbid = item.id;
         
         // サムネイルクリック時の挙動を登録
@@ -850,7 +854,7 @@
               </div>
             `: ''}
             ${(index > 2) ? `
-              <img src="https://kkkkame0721.github.io/demoApp/video/${card.dataset.thumbid}-thumbnail.jpg" style="width: 60%; display: block; margin: 0 auto; border-radius: 12px;"/>
+              <img src="https://kkkkame0721.github.io/demoApp/video/${card.dataset.thumbid}-thumbnail.jpg?ver=1.3" style="width: 60%; display: block; margin: 0 auto; border-radius: 12px;"/>
               <button class="action-btn" onclick=showPage('collection')>コレクションへ</button>
             `: ''}
           </div>
