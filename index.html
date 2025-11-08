@@ -274,6 +274,15 @@
   .card .card-video {
     height: 100%;
   }
+  
+  /* 動画下部の情報欄 */
+  .info {
+    position: absolute;
+    bottom: calc(var(--tabbar-height, 60px) + 1rem);
+    left: 16px;
+    font-size: 1.1rem;
+    text-shadow: 0 0 8px rgba(0,0,0,0.6);
+  }
 
   /* モーダルの基本構造 */
   .modal {
@@ -291,16 +300,16 @@
     overflow: hidden;
     box-shadow: -4px 0 10px rgba(0,0,0,0.2);
   }
-  /* 👇 ここが「はみ出している部分」に相当するクリック領域 */
+  /* はみ出してる部分 */
   .modal #modal-swipe-handle {
     position: absolute;
     top: 0;
     left: 0;
-    width: 16px; /* ← 好きに調整 */
+    width: 16px;
     height: 100%;
     cursor: pointer;
     /* デバッグ中だけ色をつける（完成時は消す） */
-    background: rgba(255,0,0,0.2);
+    /*background: rgba(255,0,0,0.2);*/
   }
   
   .modal.hidden {
@@ -330,15 +339,6 @@
     float: right;
     font-size: 1.2rem;
     cursor: pointer;
-  }
-
-  .info {
-    position: absolute;
-    bottom: var(--tabbar-height, 60px);
-    padding-bottom: 1rem;
-    left: 16px;
-    font-size: 1.1rem;
-    text-shadow: 0 0 8px rgba(0,0,0,0.6);
   }
   
   /* コレクションページ */
