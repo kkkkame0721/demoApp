@@ -1,15 +1,23 @@
 [
   {
     "id": "ycsj-nagoya",
-    "title": "YCSJ名古屋",
+    "title": "Yu-Gi-Oh! CHAMPIONSHIP SERIES JAPAN NAGOYA 2025",
     "video": "https://kkkkame0721.github.io/demoApp/video/ycsj-nagoya.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/ycsj-nagoya-thumbnail.jpg",
     "description": "これは動画1の詳細情報です。",
     "date": "2025/11/1(土)"
   },
   {
+    "id": "chusonji",
+    "title": "中尊寺金色堂　拝観",
+    "video": "https://kkkkame0721.github.io/demoApp/video/chusonji.mp4",
+    "thumbnail": "https://kkkkame0721.github.io/demoApp/video/chusonji-thumbnail.jpg",
+    "description": "これは動画1の詳細情報です。",
+    "date": "2025/9/14(日)"
+  },
+  {
     "id": "sekalive4th",
-    "title": "セカライ4th",
+    "title": "ProjectSEKAI COLOURFUL LIVE 4th -Unison-",
     "video": "https://kkkkame0721.github.io/demoApp/video/sekalive4th.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/sekalive4th-thumbnail.jpg",
     "description": "動画2の説明文がここに入ります。",
@@ -24,12 +32,12 @@
     "date": "2023/11/10(金)"
   },
   {
-    "id": "video4",
-    "title": "動画4",
-    "video": "https://kkkkame0721.github.io/demoApp/video/ycsj-nagoya.mp4",
-    "thumbnail": "https://placehold.jp/375x812.png?text=動画4",
+    "id": "sekalive3rd",
+    "title": "ProjectSEKAI COLOURFUL LIVE 3rd -Evolve-",
+    "video": "https://kkkkame0721.github.io/demoApp/video/sekalive3rd.mp4",
+    "thumbnail": "https://kkkkame0721.github.io/demoApp/video/sekalive3rd-thumbnail.jpg",
     "description": "動画4の詳細です。",
-    "date": "2075/10/01"
+    "date": "2024/1/27(土)"
   },
   {
     "id": "video5",
