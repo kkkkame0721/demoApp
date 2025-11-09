@@ -5,7 +5,8 @@
     "video": "https://kkkkame0721.github.io/demoApp/video/ycsj-nagoya.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/ycsj-nagoya-thumbnail.jpg",
     "date": "2025/11/1(土)",
-    "image": "https://kkkkame0721.github.io/demoApp/img/ycsj-nagoya-eventimage.jpg"
+    "eventimage": "https://kkkkame0721.github.io/demoApp/img/ycsj-nagoya-eventimage.jpg",
+    "ticketimage": "https://kkkkame0721.github.io/demoApp/img/ycsj-nagoya-ticketimage.jpg"
   },
   {
     "id": "chusonji",
@@ -13,7 +14,8 @@
     "video": "https://kkkkame0721.github.io/demoApp/video/chusonji.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/chusonji-thumbnail.jpg",
     "date": "2025/9/14(日)",
-    "image": "https://kkkkame0721.github.io/demoApp/img/chusonji-eventimage.jpg"
+    "eventimage": "https://kkkkame0721.github.io/demoApp/img/chusonji-eventimage.jpg",
+    "ticketimage": "https://kkkkame0721.github.io/demoApp/img/chusonji-ticketimage.jpg"
   },
   {
     "id": "sekalive4th",
@@ -21,7 +23,8 @@
     "video": "https://kkkkame0721.github.io/demoApp/video/sekalive4th.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/sekalive4th-thumbnail.jpg",
     "date": "2025/1/25(土)",
-    "image": "https://kkkkame0721.github.io/demoApp/img/sekalive4th-eventimage.jpg"
+    "eventimage": "https://kkkkame0721.github.io/demoApp/img/sekalive4th-eventimage.jpg",
+    "ticketimage": "https://kkkkame0721.github.io/demoApp/img/sekalive4th-ticketimage.jpg"
   },
   {
     "id": "c105",
@@ -29,7 +32,8 @@
     "video": "https://kkkkame0721.github.io/demoApp/video/c105.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/c105-thumbnail.jpg",
     "date": "2024/12/30(月)",
-    "image": "https://kkkkame0721.github.io/demoApp/img/c105-eventimage.jpg"
+    "eventimage": "https://kkkkame0721.github.io/demoApp/img/c105-eventimage.jpg",
+    "ticketimage": "https://kkkkame0721.github.io/demoApp/img/c105-ticketimage.jpg"
   },
   {
     "id": "dekaren20th",
@@ -37,7 +41,8 @@
     "video": "https://kkkkame0721.github.io/demoApp/video/dekaren20th.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/dekaren20th-thumbnail.jpg",
     "date": "2024/6/7(金)",
-    "image": "https://kkkkame0721.github.io/demoApp/img/dekaren20th-eventimage.jpg"
+    "eventimage": "https://kkkkame0721.github.io/demoApp/img/dekaren20th-eventimage.jpg",
+    "ticketimage": "https://kkkkame0721.github.io/demoApp/img/dekaren20th-ticketimage.jpg"
   },
   {
     "id": "sekalive3rd",
@@ -45,7 +50,8 @@
     "video": "https://kkkkame0721.github.io/demoApp/video/sekalive3rd.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/sekalive3rd-thumbnail.jpg",
     "date": "2024/1/27(土)",
-    "image": "https://kkkkame0721.github.io/demoApp/img/sekalive3rd-eventimage.jpg"
+    "eventimage": "https://kkkkame0721.github.io/demoApp/img/sekalive3rd-eventimage.jpg",
+    "ticketimage": "https://kkkkame0721.github.io/demoApp/img/sekalive3rd-ticketimage.jpg"
   },
   {
     "id": "hanakutashi",
@@ -53,7 +59,8 @@
     "video": "https://kkkkame0721.github.io/demoApp/video/hanakutashi.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/hanakutashi-thumbnail.jpg",
     "date": "2023/11/10(金)",
-    "image": "https://kkkkame0721.github.io/demoApp/img/hanakutashi-eventimage.jpg"
+    "eventimage": "https://kkkkame0721.github.io/demoApp/img/hanakutashi-eventimage.jpg",
+    "ticketimage": "https://kkkkame0721.github.io/demoApp/img/hanakutashi-ticketimage.jpg"
   },
   {
     "id": "2023m1",
@@ -61,6 +68,7 @@
     "video": "https://kkkkame0721.github.io/demoApp/video/2023m1.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/2023m1-thumbnail.jpg",
     "date": "2023/2/16(木)",
-    "image": "https://kkkkame0721.github.io/demoApp/img/2023m1-eventimage.jpg"
+    "eventimage": "https://kkkkame0721.github.io/demoApp/img/2023m1-eventimage.jpg",
+    "ticketimage": "https://kkkkame0721.github.io/demoApp/img/2023m1-ticketimage.jpg"
   }
 ]
