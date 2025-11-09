@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<link rel="icon" type="image/svg+xml" href="https://kkkkame0721.github.io/demoApp/img/menu.svg">
+<link rel="apple-touch-icon" href="https://kkkkame0721.github.io/demoApp/img/menu.svg">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>未来型半券サービスAkashic</title>
@@ -8,6 +10,7 @@
   :root {
     --titlebar-height: 90px;
     --tabbar-height: calc(60px + env(safe-area-inset-bottom));
+    --main-gradation: linear-gradient(to right, #FF54AF, #FF9A0B);
   }
   
   html, body {
@@ -72,7 +75,7 @@
   }
 
   .ticket-tabs .tab-btn.active {
-    background: linear-gradient(to right, #FF54AF, #FF9A0B);
+    background: var(--main-gradation);
     color: white;
   }
   
@@ -96,8 +99,8 @@
   /* --- チケット詳細パネル --- */
   #ticket-detail-panel {
     position: absolute;
-    top: 90px;
-    bottom: 60px;
+    top: var(--titlebar-height);
+    bottom: var(--tabbar-height);
     left: 0;
     width: 100%;
     background: #fff;
@@ -164,13 +167,14 @@
     display: flex;
     justify-content: space-between;
     gap: 8px;
+    pointer-events: none;
   }
 
   /* 汎用アクションボタン */
   .action-btn {
     padding: 12px;
     border-radius: 100px;
-    background: linear-gradient(to right, #FF54AF, #FF9A0B);
+    background: var(--main-gradation);
     color: white;
     border: none;
     font-size: 14px;
@@ -179,6 +183,11 @@
     margin: 0 auto;
     margin-top: 12px;
     cursor: pointer;
+  }
+  
+  .action-btn.inactive {
+    background: #D0D0D0;
+    pointer-events: none;
   }
 
   
@@ -294,7 +303,7 @@
     width: 100%;
     height: 94vh;
     background: white;
-    color: #757575;
+    color: #333;
     transition: right 0.4s ease;
     z-index: 10;
     border-top-left-radius: 16px;
@@ -332,12 +341,18 @@
   .modal-header {
     padding: 1rem;
     background: white;
-    color: #757575;
     font-size: 1.2rem;
+  }
+  
+  .section-title {
+    width: fit-content;
+    background: var(--main-gradation);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .close-btn {
-    color: #757575;
+    color: #333;
     float: right;
     font-size: 1.2rem;
     cursor: pointer;
@@ -414,7 +429,7 @@
   }
 
   .tab.active span {
-    background: linear-gradient(to right, #FF54AF, #FF9A0B);
+    background: var(--main-gradation);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -530,9 +545,8 @@
           <div class="event-content">
             <img id="eventImage" src="https://placehold.jp/360x120.png" alt="event thumbnail">
             <div class="event-text">
-              <h3 id="eventTitle">タイトルが入ります</h3>
-              <p id="eventDate">日付が入ります</p>
-              <p id="eventDescription">説明文が入ります</p>
+              <h3 id="eventTitle">タイトル</h3>
+              <p id="eventDate">日付</p>
             </div>
           </div>
         </section>
@@ -541,9 +555,9 @@
         <section class="modal-section" id="detailSection">
           <h2 class="section-title">詳細情報</h2>
 
-          <p><strong>撮影場所：</strong><span id="eventLocation">未設定</span></p>
+          <p><strong>場所：</strong><span id="eventLocation">未設定</span></p>
           <p><strong>撮影日時：</strong><span id="eventRecordedAt">未設定</span></p>
-          <p><strong>メモ：</strong><span id="eventNotes">特になし</span></p>
+          <p><strong>メモ：</strong><span id="eventNotes">未設定</span></p>
         </section>
 
       </div>
@@ -571,6 +585,7 @@
 <script>
   const pages = document.querySelectorAll('.page');
   const cards = [];
+  const details = [];
   const scrollArea = document.getElementById('scrollArea');
   const modal = document.getElementById('modal');
   const modalContent = document.getElementById('modalContent');
@@ -586,9 +601,10 @@
     .then(res => res.json())
     .then(data => {
       data.forEach(item => {
+        details.push(item);
         const card = document.createElement('div');
-        const id = item.id;
         card.classList.add('card');
+        card.dataset.cardid = item.id;
         card.innerHTML = `
           <video class="card-video" id=${item.id} playsinline muted>
             <source src=${item.video+"?ver=1.1"} type="video/mp4">
@@ -663,10 +679,12 @@
 
       // ★ 画面中央に一番近いカードだけ再生、それ以外停止
       if (offset < height * 0.4) {
+        card.classList.add("active");
         if (video.paused) {
           video.play();
         }
       } else {
+        card.classList.remove("active");
         animationReset(video);
       }
     });
@@ -700,10 +718,32 @@
   // ボタンでモーダルを閉じる
   closeBtn.addEventListener('click', closeModal);
 
+  // モーダル内のデータを更新する関数
+  function updateModalInner (data) {
+    /*
+      <div class="event-content">
+        <img id="eventImage" src="https://placehold.jp/360x120.png" alt="event thumbnail">
+        <div class="event-text">
+          <h3 id="eventTitle">タイトルが入ります</h3>
+          <p id="eventDate">日付が入ります</p>
+        </div>
+      </div>
+     */
+    const eventTitle = document.getElementById("eventTitle");
+    const eventDate = document.getElementById("eventDate");
+    const eventImage = document.getElementById("eventImage");
+    eventTitle.textContent = data.title;
+    eventDate.textContent = data.date;
+    eventImage.textContent = data.image;
+  }
   // モーダルを開く関数
   function openModal() {
-    const activeCard = document.querySelector('.card.active');
-    const index = Array.from(cards).indexOf(activeCard);
+    const activeCardId = document.querySelector('.card.active').dataset.cardid;
+    const cardIdList = Array.from(cards).map(c => c.dataset.cardid);
+    const index = cardIdList.indexOf(activeCardId);
+    // モーダル内のデータを更新
+    updateModalInner(details[index]);
+    
     modal.classList.add('open');
     backBtn.classList.remove("active");
   }
@@ -834,10 +874,6 @@
     const detailTitle = document.getElementById("detail-title");
     const detailBody = document.getElementById("detail-body");
     const ticketBackBtn = document.getElementById("detail-back-btn");
-    const enterPanel = `
-      <div class="dummy-detail">名古屋ミュージックホール"ダミー" 東2ホール</div>
-      <button id="enter-btn" class="action-btn">入場する</button>
-    `;
 
     // カードをクリックするとスライドイン
     document.querySelectorAll(".ticket-card").forEach((card, index) => {
@@ -845,25 +881,34 @@
 
         const title = card.querySelector(".ticket-title").textContent;
         const date = card.querySelector(".ticket-date").textContent;
-
+        let tmpPanel = "";
+        if (index === 0) {
+          tmpPanel = `
+            <div class="dummy-detail">名古屋ミュージックホール"ダミー" 東2ホール</div>
+            <button id="enter-btn" class="action-btn">入場する</button>
+          `;
+        } else if (index === 1) {
+          tmpPanel = '<button class="action-btn inactive">まだ入場できません</button>';
+        } else if (index === 2) {
+          tmpPanel = `
+            <img id="stub-image" src="https://kkkkame0721.github.io/demoApp/img/ticket_blank.jpg" style="width: 60%; display: block; margin: 0 auto; border-radius: 12px;">
+            <div class="stub-actions">
+              <button class="action-btn">撮影する</button>
+              <button class="action-btn">写真・動画を選ぶ</button>
+            </div>
+          `;
+        } else {
+          tmpPanel = `
+            <img src="https://kkkkame0721.github.io/demoApp/video/${card.dataset.thumbid}-thumbnail.jpg?ver=1.3" style="width: 60%; display: block; margin: 0 auto; border-radius: 12px;"/>
+            <button class="action-btn" onclick=showPage('collection')>コレクションへ</button>
+          `;
+        }
         detailTitle.textContent = "チケット詳細";
         detailBody.innerHTML = `
           <div class="detail-section">
             <h3>${title}</h3>
             <p>${(index === 0) ? date+" 18:00 開場 / 19:00 開演":date}</p>
-            ${(index === 0) ? enterPanel : ''}
-            ${(index === 2) ? `
-              <img id="stub-image" src="https://kkkkame0721.github.io/demoApp/img/ticket_blank.jpg" style="width: 60%; display: block; margin: 0 auto; border-radius: 12px;">
-              <div class="stub-actions">
-                <button class="action-btn">撮影する</button>
-                <button class="action-btn">写真・動画を選ぶ</button>
-              </div>
-            `: ''}
-            ${(index > 2) ? `
-              <img src="https://kkkkame0721.github.io/demoApp/video/${card.dataset.thumbid}-thumbnail.jpg?ver=1.3" style="width: 60%; display: block; margin: 0 auto; border-radius: 12px;"/>
-              <button class="action-btn" onclick=showPage('collection')>コレクションへ</button>
-            `: ''}
-          </div>
+            ${tmpPanel}
         `;
         detailPanel.classList.add("active");
 
