@@ -4,39 +4,63 @@
     "title": "Yu-Gi-Oh! CHAMPIONSHIP SERIES JAPAN NAGOYA 2025",
     "video": "https://kkkkame0721.github.io/demoApp/video/ycsj-nagoya.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/ycsj-nagoya-thumbnail.jpg",
-    "description": "これは動画1の詳細情報です。",
-    "date": "2025/11/1(土)"
+    "date": "2025/11/1(土)",
+    "image": "https://kkkkame0721.github.io/demoApp/img/ycsj-nagoya-eventimage.jpg"
   },
   {
     "id": "chusonji",
     "title": "中尊寺金色堂　拝観",
     "video": "https://kkkkame0721.github.io/demoApp/video/chusonji.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/chusonji-thumbnail.jpg",
-    "description": "これは動画1の詳細情報です。",
-    "date": "2025/9/14(日)"
+    "date": "2025/9/14(日)",
+    "image": "https://kkkkame0721.github.io/demoApp/img/chusonji-eventimage.jpg"
   },
   {
     "id": "sekalive4th",
     "title": "ProjectSEKAI COLOURFUL LIVE 4th -Unison-",
     "video": "https://kkkkame0721.github.io/demoApp/video/sekalive4th.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/sekalive4th-thumbnail.jpg",
-    "description": "動画2の説明文がここに入ります。",
-    "date": "2025/1/25(土)"
+    "date": "2025/1/25(土)",
+    "image": "https://kkkkame0721.github.io/demoApp/img/sekalive4th-eventimage.jpg"
   },
   {
-    "id": "hanakutashi",
-    "title": "花腐し　公開記念展示",
-    "video": "https://kkkkame0721.github.io/demoApp/video/hanakutashi.mp4",
-    "thumbnail": "https://kkkkame0721.github.io/demoApp/video/hanakutashi-thumbnail.jpg",
-    "description": "動画3の概要です。",
-    "date": "2023/11/10(金)"
+    "id": "c105",
+    "title": "COMIC MARKET 105",
+    "video": "https://kkkkame0721.github.io/demoApp/video/c105.mp4",
+    "thumbnail": "https://kkkkame0721.github.io/demoApp/video/c105-thumbnail.jpg",
+    "date": "2024/12/30(月)",
+    "image": "https://kkkkame0721.github.io/demoApp/img/c105-eventimage.jpg"
+  },
+  {
+    "id": "dekaren20th",
+    "title": "特捜戦隊デカレンジャー20th ファイヤーボール・ブースター",
+    "video": "https://kkkkame0721.github.io/demoApp/video/dekaren20th.mp4",
+    "thumbnail": "https://kkkkame0721.github.io/demoApp/video/dekaren20th-thumbnail.jpg",
+    "date": "2024/6/7(金)",
+    "image": "https://kkkkame0721.github.io/demoApp/img/dekaren20th-eventimage.jpg"
   },
   {
     "id": "sekalive3rd",
     "title": "ProjectSEKAI COLOURFUL LIVE 3rd -Evolve-",
     "video": "https://kkkkame0721.github.io/demoApp/video/sekalive3rd.mp4",
     "thumbnail": "https://kkkkame0721.github.io/demoApp/video/sekalive3rd-thumbnail.jpg",
-    "description": "動画4の詳細です。",
-    "date": "2024/1/27(土)"
+    "date": "2024/1/27(土)",
+    "image": "https://kkkkame0721.github.io/demoApp/img/sekalive3rd-eventimage.jpg"
+  },
+  {
+    "id": "hanakutashi",
+    "title": "花腐し　公開記念展示",
+    "video": "https://kkkkame0721.github.io/demoApp/video/hanakutashi.mp4",
+    "thumbnail": "https://kkkkame0721.github.io/demoApp/video/hanakutashi-thumbnail.jpg",
+    "date": "2023/11/10(金)",
+    "image": "https://kkkkame0721.github.io/demoApp/img/hanakutashi-eventimage.jpg"
+  },
+  {
+    "id": "2023m1",
+    "title": "M-1ツアースペシャル2023 愛知公演",
+    "video": "https://kkkkame0721.github.io/demoApp/video/2023m1.mp4",
+    "thumbnail": "https://kkkkame0721.github.io/demoApp/video/2023m1-thumbnail.jpg",
+    "date": "2023/2/16(木)",
+    "image": "https://kkkkame0721.github.io/demoApp/img/2023m1-eventimage.jpg"
   }
 ]
