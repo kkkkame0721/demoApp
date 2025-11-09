@@ -8,7 +8,7 @@
 <title>未来型半券サービスAkashic</title>
 <style>
   :root {
-    --titlebar-height: 90px;
+    --titlebar-height: 60px;
     --tabbar-height: calc(60px + env(safe-area-inset-bottom));
     --main-gradation: linear-gradient(to right, #FF54AF, #FF9A0B);
   }
@@ -59,8 +59,11 @@
   .ticket-tabs {
     display: flex;
     border-bottom: 1px solid #ddd;
-    padding: 0 12px;
+    padding: 10px 12px;
     gap: 8px;
+    position: sticky;
+    top: var(--titlebar-height);
+    background: white;
   }
 
   .ticket-tabs .tab-btn {
@@ -198,7 +201,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 90px;
+    height: var(--titlebar-height);
     background: #fff;
     border-bottom: 1px solid #e0e0e0;
     display: flex;
@@ -419,7 +422,7 @@
     position: fixed;
     bottom: 0;
     width: 100%;
-    height: 60px;
+    height: var(--tabbar-height);
     background: #fff;
     border-top: 1px solid #e0e0e0;
     display: flex;
@@ -1020,7 +1023,6 @@
     
     // デバッグ用
     document.getElementById("modal-swipe-handle").addEventListener("click", openModal);
-    document.getElementById("modal-swipe-handle").addEventListener("touchend", openModal);
   }
 </script>
 </body>
