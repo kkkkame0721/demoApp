@@ -931,8 +931,11 @@
     // ホーム下部画像の表示・非表示切り替え
     document.getElementById("homeBottom").style.display = (targetPage.id === "home") ? "block" : "none";
     
-    // チケット詳細ページのリセット
+    // チケット詳細ページ、入場アニメーションのリセット
     document.getElementById("ticket-detail-panel").classList.remove("active");
+    const ticketAnim = document.getElementById("ticketAnimation");
+    ticketAnim.classList.remove("active");
+    animationReset(ticketAnim);
   }
 
   /* --- ページ表示処理 --- */
