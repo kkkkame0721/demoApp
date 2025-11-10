@@ -103,6 +103,119 @@
     position: relative;
   }
   
+  /* ページ内容はタイトルバーの下から始まるように */
+  .page-content {
+    box-sizing: border-box;
+    padding-top: var(--titlebar-height);
+    padding-bottom: var(--tabbar-height);
+  }
+  
+  .page-content img{
+    width: 100%;
+  }
+  
+  /* --- ホームタブ関連 --- */
+  /* ホーム用コンテナ */
+  #homeContainer {
+    padding: 12px;
+    padding-bottom: calc(var(--tabbar-height) + 70px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* セクション共通 */
+  .section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section-title {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    width: fit-content;
+    background: var(--main-gradation);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  /* 「運営からのお知らせ」 */
+  .notice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: #ccc solid 1px;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 0;
+    margin-bottom: 24px;
+  }
+
+  .notice-item {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    color: #333;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+    background: #fafafa;
+  }
+
+  .notice-item .date {
+    font-size: 12px;
+    color: #888;
+  }
+
+  /* あなたへのオススメ */
+  .tag-block {
+    padding: 0 12px;
+    display: flex;
+    flex-direction: column;
+    border: #ccc solid 1px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+  }
+
+  .tag-title {
+    font-size: 14px;
+    color: #666;
+  }
+  .tag-title span {
+    border-bottom: #ccc solid 1px;
+  }
+
+  /* チケット/展示/ライブ項目 */
+  .item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0;
+  }
+
+  .item-card {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #222;
+  }
+
+  .item-info {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: #555;
+  }
+
+  
   /* --- チケットタブ関連 --- */
   .ticket-tabs {
     display: flex;
@@ -282,16 +395,6 @@
     margin: 0;
   }
 
-  /* ページ内容はタイトルバーの下から始まるように */
-  .page-content {
-    box-sizing: border-box;
-    padding-top: var(--titlebar-height);
-    padding-bottom: var(--tabbar-height);
-  }
-  
-  .page-content img{
-    width: 100%;
-  }
   
   /* ホーム画面下部の画像 */
   .home-bottom {
@@ -399,6 +502,7 @@
   .modal-hero {
     width: 60%;
     margin: 0 auto;
+    margin-bottom: 20px;
     display: flex;
     justify-content: center;
   }
@@ -415,13 +519,6 @@
     padding: 1rem;
     background: white;
     font-size: 1.2rem;
-  }
-  
-  .section-title {
-    width: fit-content;
-    background: var(--main-gradation);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
   }
 
   .close-btn {
@@ -534,9 +631,96 @@
   <!-- ホームタブ -->
   <div class="page" id="home" data-tabname="ホーム">
     <div class="page-content">
-      <img src="https://kkkkame0721.github.io/demoApp/img/home_content.svg?ver=1.1" id="homeContent" />
+      <div id="homeContainer">
+        <!-- 運営からのお知らせ -->
+        <section class="section notice">
+          <h2 class="section-title">運営からのお知らせ</h2>
+          <ul class="notice-list">
+            <li class="notice-item">
+              <span class="date">2025/11/03</span>
+              <span class="text">システムメンテナンス 2025/12/02(火)</span>
+            </li>
+            <li class="notice-item">
+              <span class="date">2025/11/14</span>
+              <span class="text">年始のアクセス集中により一時的に表示が遅くなる場合があります。</span>
+            </li>
+          </ul>
+        </section>
+
+        <!-- あなたへのオススメ -->
+        <section class="section recommend">
+          <h2 class="section-title">あなたへのオススメ</h2>
+
+          <!-- #映画・#愛知県 -->
+          <div class="tag-block">
+            <h3 class="tag-title">フォロー中のタグ：<span>#映画</span></h3>
+            <ul class="item-list">
+
+              <li class="item-card">
+                <div class="item-title">「偽者の庭」先行上映会</div>
+                <div class="item-info">
+                  <span class="date">2025/12/12</span>
+                  <span class="place">ダミーシネマ名古屋</span>
+                </div>
+              </li>
+
+              <li class="item-card">
+                <div class="item-title">「嘘」舞台挨拶付き上映</div>
+                <div class="item-info">
+                  <span class="date">2026/01/08</span>
+                  <span class="place">シネマズナゴヤ404</span>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+
+          <!-- #展覧会 -->
+          <div class="tag-block">
+            <h3 class="tag-title">フォロー中のタグ：<span>#展覧会</span></h3>
+            <ul class="item-list">
+
+              <li class="item-card">
+                <div class="item-title">「色と欺瞞」現代美術展</div>
+                <div class="item-info">
+                  <span class="date">2025/12/20</span>
+                  <span class="place">名古屋市虚構美術館</span>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+
+          <!-- #ライブ -->
+          <div class="tag-block">
+            <h3 class="tag-title">フォロー中のタグ：<span>#ライブ</span></h3>
+            <ul class="item-list">
+
+              <li class="item-card">
+                <div class="item-title">DUMMY NIGHT TOUR 2025</div>
+                <div class="item-info">
+                  <span class="date">2025/12/27</span>
+                  <span class="place">FAKE HALL NAGOYA</span>
+                </div>
+              </li>
+
+              <li class="item-card">
+                <div class="item-title">嘘フェス 2026冬</div>
+                <div class="item-info">
+                  <span class="date">2026/01/11</span>
+                  <span class="place">愛知国際ダミーホール</span>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+
+        </section>
+        
+      </div>
     </div>
   </div>
+
   <!-- ホームタブ下部の固定画像 -->
   <div class="home-bottom" id="homeBottom">
     <img src="https://kkkkame0721.github.io/demoApp/img/home_content_bottom_1.svg" id="homeBottomToTicket" />
