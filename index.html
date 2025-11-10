@@ -23,6 +23,54 @@
     font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans",
                "Noto Sans JP", "Meiryo", sans-serif;
   }
+  
+  /* ロード画面 */
+  .load {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    opacity: 1;
+  }
+  .load.hidden {
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .load #loadImageContainer {
+    width: 20%;
+    aspect-ratio: 1;
+  }
+  
+  .load img {
+  }
+  #lineContainer {
+    height: 14px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #loadingLine {
+    height: 10px;
+    width: 90%;
+    border-radius: 10px;
+    animation: skelton-loading 1.5s ease-in-out infinite;
+  }
+  @keyframes skelton-loading {
+    0%   { background-color: #FF54AF; transform: scaleX(0.2); }
+    100% { background-color: #FF9A0B; transform: scaleX(1); height: 5px;}
+  }
 
   .page {
     overflow-y: scroll;
@@ -465,6 +513,18 @@
 </style>
 </head>
 <body>
+  <!-- ロード画面 -->
+  <div class="load" id="load">
+    <div id="loadImageContainer">
+      <!-- <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg"> -->
+      <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+Cjxzdmcgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDQyIDM3IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zOnNlcmlmPSJodHRwOi8vd3d3LnNlcmlmLmNvbS8iIHN0eWxlPSJmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MjsiPgogICAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMSwtMTA3NCwtNDkpIj4KICAgICAgICA8ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjMzMzMzMywwLDAsMC4zMzMzMzMsMTA2My42NiwwKSI+CiAgICAgICAgICAgIDxnIHRyYW5zZm9ybT0ibWF0cml4KDMuNTEzOTcsLTEuNTcyMjFlLTIwLC0xLjU4ODIzZS0yMCwzLjU1MDAyLC00NjM5LjM4LC0zNzYuMDk4KSI+CiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTM0Ny45NywxNzguMDc2TDEzMjkuODMsMTc4LjA3NkMxMzI5LjY4LDE3OC4wNzYgMTMyOS41MywxNzcuOTk1IDEzMjkuNDUsMTc3Ljg2MkMxMzI5LjM4LDE3Ny43MjkgMTMyOS4zOCwxNzcuNTY1IDEzMjkuNDUsMTc3LjQzMkwxMzQ2LjQsMTQ4LjM3NUMxMzQ2LjQ4LDE0OC4yNDIgMTM0Ni42MiwxNDguMTYgMTM0Ni43OCwxNDguMTZDMTM0Ni45MywxNDguMTYgMTM0Ny4wOCwxNDguMjQyIDEzNDcuMTUsMTQ4LjM3NUwxMzY0LjEsMTc3LjQzMkMxMzY0LjE4LDE3Ny41NjUgMTM2NC4xOCwxNzcuNzI5IDEzNjQuMSwxNzcuODYyQzEzNjQuMDIsMTc3Ljk5NSAxMzYzLjg4LDE3OC4wNzYgMTM2My43MywxNzguMDc2TDEzNTkuMjMsMTc4LjA3NkwxMzUzLjYsMTY4LjQyNEwxMzQ3Ljk3LDE3OC4wNzZaIiBzdHlsZT0iZmlsbDp1cmwoI19MaW5lYXIxKTsiLz4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KICAgIDxkZWZzPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iX0xpbmVhcjEiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgzNC43NjMxLDEuMzAzNDRlLTEzLC0xLjE0NDg1ZS0xMywyOS45MTY0LDEzMjkuNCwxNzguMDc2KSI+PHN0b3Agb2Zmc2V0PSIwIiBzdHlsZT0ic3RvcC1jb2xvcjpyZ2IoMjU1LDEwMCwxNzMpO3N0b3Atb3BhY2l0eToxIi8+PHN0b3Agb2Zmc2V0PSIwLjUiIHN0eWxlPSJzdG9wLWNvbG9yOnJnYigyNTUsMTA0LDk0KTtzdG9wLW9wYWNpdHk6MSIvPjxzdG9wIG9mZnNldD0iMSIgc3R5bGU9InN0b3AtY29sb3I6cmdiKDI1NSwxNjAsNjApO3N0b3Atb3BhY2l0eToxIi8+PC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KPC9zdmc+Cg==">
+    </div>
+    <div id="lineContainer">
+      <div id="loadingLine"></div>
+    </div>
+
+  </div>
+  
   <!-- タイトルバー -->
   <div class="title-bar" id="titleBar">
     <img src="https://kkkkame0721.github.io/demoApp/img/menu.svg?ver=1.1" alt="menu" class="menu-icon" onclick=showPage('home') />
@@ -893,6 +953,10 @@
     if (targetPage.id !== currentPage.id) slideAnimation(targetPage);
   }
   
+  /* --- ロード画面を消す関数 --- */
+  function hideLoad () {
+    document.getElementById("load").classList.add("hidden");
+  }
   /* --- 初期化 --- */
   function init () {
     /* --- 関数登録系 --- */
@@ -1023,6 +1087,11 @@
     
     // デバッグ用
     document.getElementById("modal-swipe-handle").addEventListener("click", openModal);
+    
+    // 0.4秒待ってからロード画面を隠す
+    setTimeout(() => {
+      hideLoad();
+    }, 400);
   }
 </script>
 </body>
