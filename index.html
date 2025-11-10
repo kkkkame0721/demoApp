@@ -1015,8 +1015,8 @@
           const ticketAnim = document.getElementById("ticketAnimation");
           ticketAnim.addEventListener("click", () => ticketAnim.play());
           ticketAnim.addEventListener("ended", () => {
-            animationReset(ticketAnim);
             ticketAnim.classList.remove("active");
+            animationReset(ticketAnim);
           });
           // 入場ボタン → 動画再生紐付け
           document.getElementById("enter-btn").addEventListener("click", () => {
