@@ -1199,6 +1199,7 @@
           const ticketAnim = document.getElementById("ticketAnimation");
           ticketAnim.addEventListener("click", () => ticketAnim.play());
           ticketAnim.addEventListener("ended", () => {
+            detailPanel.classList.remove("active");
             ticketAnim.classList.remove("active");
             animationReset(ticketAnim);
           });
